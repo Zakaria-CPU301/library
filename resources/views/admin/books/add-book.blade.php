@@ -1,9 +1,9 @@
-<x-manage-user-layout>
+<x-app-layout>
     <div class="container">
         <x-slot name="header">
             <x-header-info title="Buku Baru" desc="masukkan data buku baru ke dalam sistem"/>
         </x-slot>
-        <main>
+        <div>
             <form action="{{route('books.store')}}" method="POST">
                 @csrf
                 <label for="title">Judul Buku</label>
@@ -28,6 +28,6 @@
                 </select>
                 <button type="submit">Tambah Buku</button>
             </form>
-        </main>
+        </div>
     </div>
-</x-manage-user-layout>
+</x-app-layout>

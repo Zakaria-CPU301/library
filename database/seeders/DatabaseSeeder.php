@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
+use App\Models\Collection;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -17,12 +18,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        Collection::factory()->create([
+            'collection_name' => 'karyawan',
+        ]);
+
         User::factory()->create([
             'fullname' => 'Super Dede',
             'username' => 'SuperDedeCihuy',
             'email' => 'superadmin@gmail.com',
             'password' => Hash::make('asd'),
             'role' => 'admin',
+            'collection_id' => 1,
         ]);
 
         Category::factory()->createMany([

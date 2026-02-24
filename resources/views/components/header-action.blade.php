@@ -1,0 +1,1 @@
+<a href="?action={{$id}}" {{ $attributes->merge(['class' => 'items-center text-xs capitalize py-2 px-4 rounded cursor-pointer']) }}">{{$id}}</a>

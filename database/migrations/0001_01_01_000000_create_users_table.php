@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->enum('role', ['admin', 'user']);
+            $table->enum('status', ['active', 'disabled'])->default('active');
+            
+            $table->foreignId('collection_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
 
