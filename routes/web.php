@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('users')->name('users.')->group(function () {
         Route::get('/', [RegisteredUserController::class, 'index'])->name('index');
+        Route::post('/data', [RegisteredUserController::class, 'data'])->name('data');
 
         Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
         Route::post('single', [RegisteredUserController::class, 'singleStore'])->name('single-store');

@@ -21,8 +21,19 @@ class RegisteredUserController extends Controller
 {
     public function index()
     {
+        $collections = Collection::all();
         $users = User::all();
-        return view('admin.users.index', compact('users'));
+        return view('admin.users.index', compact('collections', 'users'));
+    }
+
+    public function data(Request $request)
+    {
+        $cId = $request['c-id'];
+        $users = $cId !== null ? User::with('collection')->where('collection_id', $cId)->get() : User::with('collection')->get();
+
+        return response()->json([
+            'users' => $users,
+        ]);
     }
 
     /**

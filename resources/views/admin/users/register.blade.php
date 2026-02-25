@@ -20,21 +20,21 @@
         <!-- Name -->
         <div>
             <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" autofocus autocomplete="name" />
+            <x-text-input id="name" class="block w-full" type="text" name="name" :value="old('name')" autofocus autocomplete="name" placeholder="{{__('Fullname')}}" />
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
 
         <!-- Username -->
         <div class="mt-4">
             <x-input-label for="username" :value="__('Username')" />
-            <x-text-input id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')" autofocus autocomplete="username" />
+            <x-text-input id="username" class="block w-full" type="text" name="username" :value="old('username')" autofocus autocomplete="username" placeholder="{{__('Username')}}" />
             <x-input-error :messages="$errors->get('username')" class="mt-2" />
         </div>
 
         <!-- Email Address -->
         <div class="mt-4">
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" autocomplete="username" />
+            <x-text-input id="email" class="block w-full" type="email" name="email" :value="old('email')" autocomplete="email" placeholder="{{__('Email')}}" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
@@ -42,9 +42,10 @@
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />
 
-            <x-text-input id="password" class="block mt-1 w-full"
+            <x-text-input id="password" class="block w-full"
                 type="password"
                 name="password"
+                placeholder="{{__('Password')}}"
                 required autocomplete="new-password" />
 
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
@@ -54,7 +55,7 @@
         {{-- <div class="mt-4">
                 <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
 
-                <x-text-input id="password_confirmation" class="block mt-1 w-full"
+                <x-text-input id="password_confirmation" class="block w-full"
                                 type="password"
                                 name="password_confirmation" required autocomplete="new-password" />
 
@@ -62,11 +63,11 @@
             </div> --}}
 
         <div class="mt-4">
-            <x-input-label for="password" :value="__('Collection')" />
+            <x-input-label for="collection" :value="__('Collection')" />
             <select name="collection" id="collection">
                 <option value="" hidden>Select Collection For User Storage"</option>
                 @foreach ($collections as $collection)
-                <option value="{{$collection['id']}}">{{$collection['collection_name']}}</option>
+                    <option value="{{$collection['id']}}">{{$collection['collection_name']}}</option>
                 @endforeach
             </select>
             <script>
@@ -109,7 +110,7 @@
         <div class="mt-4">
             <x-input-error :messages="$errors->get('import')" class="" />
             <x-input-label for="file" :value="__('Import File')" class="mt-2" />
-            <x-text-input type="file" name="import" id="file" class="block mt-1 w-full" required />
+            <x-text-input type="file" name="import" id="file" class="block w-full" required />
         </div>
 
         <div class="mt-4">

@@ -29,7 +29,7 @@
             @endisset
 
             <div class="w-full h-full flex justify-center items-center">
-                <div class="w-full sm:max-w-md px-10 py-5 bg-white shadow-md overflow-hidden sm:rounded-lg">
+                <div class="w-full sm:max-w-md px-5 py-5 bg-white shadow-md overflow-hidden sm:rounded-lg">
                     {{ $slot }}
                 </div>
             </div>
