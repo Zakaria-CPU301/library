@@ -13,6 +13,15 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <style>
+            *::-webkit-scrollbar {
+                display: none; 
+            }
+            * {
+                scrollbar-width: none;
+            }
+        </style>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen min-w-full bg-gray-100">

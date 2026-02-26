@@ -18,8 +18,8 @@
                     <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
                         {{ __('Users') }}
                     </x-nav-link>
-                    @if (request()->is('users'))
-                    <x-nav-link :href="route('users.register', ['action' => 'single'])" :active="false">
+                    @if (!request()->is('dashboard'))
+                    <x-nav-link :href="route('users.create', ['action' => 'single'])" :active="request()->routeIs('users.create')">
                         {{ __('Add User(s)') }}
                     </x-nav-link>
                     @endif

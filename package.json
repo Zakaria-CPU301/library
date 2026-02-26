@@ -17,6 +17,7 @@
         "vite": "^7.0.7"
     },
     "dependencies": {
+        "tailwind-scrollbar-hide": "^4.0.0",
         "tom-select": "^2.5.1"
     }
 }

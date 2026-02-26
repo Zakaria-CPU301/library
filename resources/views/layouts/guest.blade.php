@@ -17,9 +17,20 @@
         
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <style>
+            *::-webkit-scrollbar {
+                display: none; 
+            }
+            * {
+                scrollbar-width: none;
+            }
+        </style>
     </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="h-screen flex flex-col items-center pt-6 sm:pt-0 bg-gray-100">
+    <body class="font-sans text-gray-900 antialiased bg-gray-100">
+        <div class="flex flex-col min-h-screen w-full pt-6 sm:pt-0">
+            @include('layouts.navigation')
+            
             @isset($header)
                 <header class="w-full bg-white shadow">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
@@ -28,8 +39,8 @@
                 </header>
             @endisset
 
-            <div class="w-full h-full flex justify-center items-center">
-                <div class="w-full sm:max-w-md px-5 py-5 bg-white shadow-md overflow-hidden sm:rounded-lg">
+            <div class="flex-1 flex justify-center items-center">
+                <div class="w-full sm:max-w-md px-5 py-5 bg-white shadow-md sm:rounded-lg">
                     {{ $slot }}
                 </div>
             </div>

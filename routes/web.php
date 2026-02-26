@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [RegisteredUserController::class, 'index'])->name('index');
         Route::post('/data', [RegisteredUserController::class, 'data'])->name('data');
 
-        Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
+        Route::get('register', [RegisteredUserController::class, 'create'])->name('create');
         Route::post('single', [RegisteredUserController::class, 'singleStore'])->name('single-store');
         Route::post('import', [RegisteredUserController::class, 'importStore'])->name('import-store');
 
