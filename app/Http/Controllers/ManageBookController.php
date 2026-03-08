@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Book;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ManageBookController extends Controller
 {
@@ -13,7 +15,8 @@ class ManageBookController extends Controller
      */
     public function index()
     {
-        //
+        $books = Book::all();
+        return view('pages.books.index', compact('books'));
     }
 
     /**
@@ -21,7 +24,7 @@ class ManageBookController extends Controller
      */
     public function create()
     {
-        return view('pages.add-book');
+        return view('pages.books.create');
     }
 
     /**
@@ -38,14 +41,22 @@ class ManageBookController extends Controller
             'category' => 'required|exists:categories,id',
         ]);
 
-        Book::create([
-            'title' => $validatedData['title'],
-            'author' => $validatedData['author'],
-            'qty' => $validatedData['qty'],
-            'lang' => $validatedData['lang'],
-            'year_published' => $validatedData['year'],
-            'category_id' => $validatedData['category'],
-        ]);
+        try {
+            DB::beginTransaction();
+            Book::create([
+                'title' => $validatedData['title'],
+                'author' => $validatedData['author'],
+                'qty' => $validatedData['qty'],
+                'lang' => $validatedData['lang'],
+                'year_published' => $validatedData['year'],
+                'category_id' => $validatedData['category'],
+            ]);
+            DB::commit();
+            return redirect()->route('books.index');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('err', $e->getMessage());
+        }
     }
 
     /**

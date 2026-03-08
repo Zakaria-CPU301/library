@@ -5,7 +5,7 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ route('dashboard') }}" wire:navigate>
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
@@ -18,10 +18,18 @@
                     <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
                         {{ __('Users') }}
                     </x-nav-link>
-                    @if (!request()->is('dashboard'))
-                    <x-nav-link :href="route('users.create', ['action' => 'single'])" :active="request()->routeIs('users.create')">
-                        {{ __('Add User(s)') }}
+                    <x-nav-link :href="route('books.index')" :active="request()->routeIs('books.index')">
+                        {{ __('Books') }}
                     </x-nav-link>
+                    @if (request()->routeIs('users.*'))
+                        <x-nav-link :href="route('users.create.single')" :active="request()->routeIs('users.create.*')">
+                            {{ __('Add Book(s)') }}
+                        </x-nav-link>
+                    @endif
+                    @if (request()->routeIs('books.*'))
+                        <x-nav-link :href="route('books.create')" :active="request()->routeIs('books.create')">
+                            {{ __('Add Book(s)') }}
+                        </x-nav-link>
                     @endif
                 </div>
             </div>

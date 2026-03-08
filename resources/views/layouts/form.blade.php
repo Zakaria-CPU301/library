@@ -16,7 +16,7 @@
         <script src="https://cdn.jsdelivr.net/npm/tom-select@2.5.2/dist/js/tom-select.complete.min.js"></script>
         
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/element/tom-select.js'])
 
         <style>
             *::-webkit-scrollbar {
@@ -25,11 +25,15 @@
             * {
                 scrollbar-width: none;
             }
-        </style>
+            </style>
+            @livewireStyles
     </head>
     <body class="font-sans text-gray-900 antialiased bg-gray-100">
         <div class="flex flex-col min-h-screen w-full pt-6 sm:pt-0">
-            @include('layouts.navigation')
+            
+            @if(Auth::user())
+                @include('layouts.navigation')
+            @endif
             
             @isset($header)
                 <header class="w-full bg-white shadow">
@@ -44,6 +48,7 @@
                     {{ $slot }}
                 </div>
             </div>
+            @livewireScripts
         </div>
     </body>
 </html>
