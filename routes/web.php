@@ -33,8 +33,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Route::get('data', [UserController::class, 'data'])->name(name: 'data'); // manual fetch AJAX
 
         Route::prefix('register')->name('create.')->group(function () {
-            Route::get('single', [UserController::class, 'create'])->name('single');
-            Route::get('import', [UserController::class, 'create'])->name('import');
+            Route::livewire('single', 'pages::users.register')->name('single');
+            Route::livewire('import', 'pages::users.register')->name('import');
         });
 
         Route::post('single', [UserController::class, 'singleStore'])->name('single-store');

@@ -23,12 +23,12 @@
                     </x-nav-link>
                     @if (request()->routeIs('users.*'))
                         <x-nav-link :href="route('users.create.single')" :active="request()->routeIs('users.create.*')">
-                            {{ __('Add Book(s)') }}
+                            {{ __('Create User(s)') }}
                         </x-nav-link>
                     @endif
                     @if (request()->routeIs('books.*'))
                         <x-nav-link :href="route('books.create')" :active="request()->routeIs('books.create')">
-                            {{ __('Add Book(s)') }}
+                            {{ __('Add Book') }}
                         </x-nav-link>
                     @endif
                 </div>

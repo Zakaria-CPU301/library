@@ -12,16 +12,19 @@ function tomSelect() {
             create: sel[key],
             createFilter: function (input) {
                 input = input.trim().toLowerCase();
-
                 for (let key in this.options) {
                     let existingText = this.options[key].text
                         .trim()
                         .toLowerCase();
-                    if (existingText === input) {
+                        
+                    if (existingText === input || !isNaN(input)) {
                         return false;
                     }
                 }
                 return true;
+            },
+            onChange(value) {
+                Livewire.dispatch(key, {[key]: value})
             },
             sortField: {
                 field: "text",

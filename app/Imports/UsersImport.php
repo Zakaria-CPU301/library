@@ -11,10 +11,12 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 class UsersImport implements ToModel, WithHeadingRow, SkipsEmptyRows
 {
     protected $collectionId;
+    public $role;
     
-    public function __construct($cId)
+    public function __construct($cId, $role)
     {
         $this->collectionId = $cId;
+        $this->role = $role;
     }
     
     /**
@@ -32,6 +34,7 @@ class UsersImport implements ToModel, WithHeadingRow, SkipsEmptyRows
             'email' => $row['email'],
             'fullname' => $row['fullname'],
             'password' => Hash::make($row['password']),
+            'role' => $this->role,
             'collection_id' => $this->collectionId
         ]);
     }
