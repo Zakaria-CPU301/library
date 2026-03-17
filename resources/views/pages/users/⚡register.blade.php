@@ -242,7 +242,7 @@
         <div class="mt-4">
             <x-input-label for="collection" :value="__('Select Collection')" class="mt-2" />
             <div class="flex pt-3 space-y-5 bg-yellow-200">
-                <div class="p-[4px] bg-blue-400 rounded-full animate-ping"></div>
+                <div class="p-1 bg-blue-400 rounded-full animate-ping"></div>
                 <span class="text-sm">{{__('Penambahan koleksi harus memiliki huruf')}}</span>
             </div>
             <div wire:ignore>
@@ -256,7 +256,6 @@
             <x-input-error :messages="$errors->get('collection')" />
         </div>
         <div class="flex items-center justify-end mt-4">
-            
             <x-primary-button wire:confirm="are you sure wkwk" class="ms-4">
                 {{ __('Import') }}
             </x-primary-button>
