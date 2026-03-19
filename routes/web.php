@@ -35,9 +35,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::livewire('import', 'pages::admin.users.register')->name('import');
         });
 
-        Route::post('single', [UserController::class, 'singleStore'])->name('single-store');
-        Route::post('import', [UserController::class, 'importStore'])->name('import-store');
-
         Route::get('edit/{userId}', [UserController::class, 'edit'])->name('edit');
         Route::put('update/{userId}', [UserController::class, 'update'])->name('update');
         Route::delete('delete/{id}', [UserController::class, 'destroy'])->name('destroy');
