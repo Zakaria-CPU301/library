@@ -11,7 +11,7 @@ new class extends Component
     public $collections = '';
     public $isActive = 0;
 
-    public $perPage = [0 => 10];
+    public $perPage = [0 => 15];
 
     public function mount() {
         $this->collections = Collection::all();
@@ -20,18 +20,17 @@ new class extends Component
         }
     }
     
-    #[On(event: 'load-more')]
     public function loadMore() {
         $this->perPage[$this->isActive] += 10;
     }
 
     public function render() {
-        $query = User::with('collection');
+        $query = User::with('collection')->latest('fullname');
         if ($this->isActive != 0) {
             $query->where('collection_id', $this->isActive);
         }
         $users = $query->paginate($this->perPage[$this->isActive]);
-        return view('pages.users.⚡index', ['users' => $users]);
+        return view('pages.admin.users.⚡index', ['users' => $users]);
     }
 
     public function filterUser($param) {
@@ -47,7 +46,7 @@ new class extends Component
     </div>
 
     <div class="flex flex-col px-10">
-        <div id="nav-collection" class="backdrop-blur-lg mt-1 px-5 py-5 sticky top-5 duration-500 rounded-lg">
+        <div id="nav-collection" wire:ignore.self class="mt-1 px-5 py-5 sticky top-5 duration-500 rounded-lg">
             <div id="collection" class="flex space-x-4 overflow-x-scroll">
                 @csrf
                 <button type="button" wire:click="filterUser({{0}})" class="{{$isActive == 0 ? 'bg-gray-900 text-white' : ''}} px-4 py-2 rounded-lg inline-flex font-bold capitalize cursor-pointer hover:bg-slate-700 hover:text-white duration-100">{{ __('semua') }}</button>
@@ -56,13 +55,10 @@ new class extends Component
                 @endforeach
             </div>
         </div>
+
         <div class="flex justify-center">
             <x-main-section>
-                @if (session('success'))
-                <div class="text-sm text-green-600">
-                    {{ session('success') }}
-                </div>
-                @endif
+                <x-session-success />
                 <table class="table-fixed w-full">
                     <thead>
                         <tr>
@@ -84,7 +80,7 @@ new class extends Component
                             <td class="border px-4 py-3 capitalize">{{ Str::words($user->fullname, 2, ' ...') }}</td>
                             <td class="border px-4 py-3">{{ $user->username }}</td>
                             <td class="border px-4 py-3">{{ $user->email }}</td>
-                            <td class="border px-4 py-3 capitalize">{{ $user->role }}</td>
+                            <td class="border px-4 py-3 capitalize text-center">{{ $user->role }}</td>
                             <td class="border px-4 py-3 capitalize">{{ $user->collection->collection_name }}</td>
                             <td class="border px-1 py-1 text-center"><a href="" class="inline-flex bg-yellow-500 px-4 py-2 text-white rounded-md">{{ __('Lihat') }}</a></td>
                             <td class="border px-1 py-1 text-center"><a href="{{route('users.edit', ['userId' => $user->id, 'action' => 'single'])}}" class="inline-flex bg-blue-500 px-4 py-2 text-white rounded-md">{{ __('Edit') }}</a></td>
