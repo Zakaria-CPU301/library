@@ -114,7 +114,7 @@ new #[Layout('layouts.form')] class extends Component
                 $this->getRules(),   // public rules
                 $this->singleRules() // local rules
             );
-            $this->validate($rules);
+            $this->validate($kanjut);
 
             $this->single();
         }
