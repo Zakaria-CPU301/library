@@ -10,6 +10,7 @@ new class extends Component
 {
     public $collections = '';
     public $isActive = 0;
+    public $user = '';
 
     public $perPage = [0 => 15];
 
@@ -42,6 +43,15 @@ new class extends Component
     public function filterUser($param) {
         $this->isActive = $param;
     }
+
+    public function destroyUser($userId) {
+        $this->user = $userId;
+        User::findOrFail($this->user)->delete();
+        session()->flash('success', 'akun berhasil di hapus');
+    }
+
+    // public function save($param) {
+    // }
 };
 ?>
 <div>
@@ -92,13 +102,9 @@ new class extends Component
                             <td class="border px-4 py-3 capitalize text-center">{{ $user->role }}</td>
                             <td class="border px-4 py-3 capitalize">{{ $user->collection->collection_name }}</td>
                             <td class="border px-1 py-1 text-center"><a href="" class="inline-flex bg-yellow-500 px-4 py-2 text-white rounded-md">{{ __('Lihat') }}</a></td>
-                            {{-- Admin Tidak Bisa Edit User --}}
+                            <td class="border px-1 py-1 text-center"><a href="" class="inline-flex bg-gray-800 px-4 py-2 text-white rounded-md">{{ __('Blokir') }}</a></td>
                             <td class="border px-1 py-1 text-center">
-                                <form action="{{route('users.destroy', $user->id)}}" method="post">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" onclick="return confirm('apakah kamu yakin ingin menghapus user ini?')" class="inline-flex bg-red-500 px-4 py-2 text-white rounded-md">{{ __('Hapus') }}</button>
-                                </form>
+                                    <button wire:click="destroyUser({{$user->id}})" wire:confirm="apakah kamu yakin ingin menghapus user ini?" class="inline-flex bg-red-500 px-4 py-2 text-white rounded-md hover:cursor-pointer">{{ __('Hapus') }}</button>
                             </td>
                         </tr>
                         @empty

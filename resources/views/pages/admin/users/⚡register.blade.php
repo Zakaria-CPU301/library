@@ -36,8 +36,8 @@ new #[Layout('layouts.form')] class extends Component
     public function singleRules()
     {
         return [
-            'fullname' => ['required', 'max:10'],
-            'username' => 'required',
+            'fullname' => ['required', 'max:255'],
+            'username' => ['required', 'max:50'],
             'email' => ['required', 'email:dns'],
             'password' => 'required',
         ];
@@ -77,18 +77,19 @@ new #[Layout('layouts.form')] class extends Component
     }
 
     // ------------------------- activition model (end point) -----------------------------
-    public function User()
+    public $addError = '';
+    public function user()
     {
         if ($this->mode === 'import') {
             Excel::import(new UsersImport($this->newCollection(), $this->role), $this->import->getRealPath());
             
-            session()->flash('success', 'User imported successful');
+            session()->flash('success', 'User imported successfully');
         } else if ($this->mode === 'single') {
             $user = $this->validate(array_merge($this->getRules(), $this->singleRules()));
             $user['collection_id'] = $this->newCollection();
             User::create($user);
             
-            session()->flash('success', 'User registered successful');
+            session()->flash('success', 'User registered successfully');
         }
     }
 
@@ -105,10 +106,19 @@ new #[Layout('layouts.form')] class extends Component
     // ------------------------- end hook and method -----------------------------
     public function save()
     {
-        $this->validate(array_merge($this->singleRules(), $this->importRules(), $this->getRules()));
-        $this->User();
-
-        $this->redirectRoute('users.index', navigate: true); //reference
+        if ($this->mode === 'single') {
+            $validate = array_merge($this->getRules(), $this->singleRules());
+        } else {
+            $validate = array_merge($this->getRules(), $this->importRules());
+        }
+        $this->validate($validate);
+        
+        try {
+            $this->user();
+            $this->redirectRoute('users.index', navigate: true); //reference
+        } catch (\Exception $e) {
+            $this->addError('import', $e->getMessage());
+        }
     }
 };
 ?>
@@ -128,25 +138,23 @@ new #[Layout('layouts.form')] class extends Component
 
         @if ($mode === 'single')
         <!-- Name -->
-        @dump($user)
-        <p>{{$user->fullname}}</p>
         <div>
             <x-input-label for="fullname" :value="__('Fullname')" />
-            <x-text-input id="fullname" class="block w-full" type="text" wire:model.live="fullname" :value="$user->fullname" placeholder="{{__('Fullname')}}" />
+            <x-text-input id="fullname" class="block w-full" type="text" wire:model.live="fullname" placeholder="{{__('Fullname')}}" />
             <x-input-error :messages="$errors->get('fullname')" class="mt-2" />
         </div>
 
         <!-- Username -->
         <div class="mt-4">
             <x-input-label for="username" :value="__('Username')" />
-            <x-text-input id="username" class="block w-full" type="text" wire:model.live="username" :value="$user->username" placeholder="{{__('Username')}}" />
+            <x-text-input id="username" class="block w-full" type="text" wire:model.live="username" placeholder="{{__('Username')}}" />
             <x-input-error :messages="$errors->get('username')" class="mt-2" />
         </div>
 
         <!-- Email Address -->
         <div class="mt-4">
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block w-full" type="email" wire:model.live="email" :value="$user->email" placeholder="{{__('Email')}}" />
+            <x-text-input id="email" class="block w-full" type="email" wire:model.live="email" placeholder="{{__('Email')}}" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
