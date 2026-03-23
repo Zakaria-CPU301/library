@@ -14,13 +14,13 @@ new #[Layout('layouts.form')] class extends Component
 {
     // -------------------------- first render page -----------------------
     public $mode;
-    public function mount()
+    public function mount(User $user)
     {
         $this->mode = request()->segment(3);
         $this->dispatch('currently-page', current: request()->segment(1));
     }
-
-    // --------------------------- validation -----------------------------
+    
+    // ----------------------------- validation ---------------------------
     use WithFileUploads;
     public $import;
     public $fullname = '';
@@ -102,7 +102,7 @@ new #[Layout('layouts.form')] class extends Component
         return $collection_id;
     }
 
-    // end hook with save
+    // ------------------------- end hook and method -----------------------------
     public function save()
     {
         $this->validate(array_merge($this->singleRules(), $this->importRules(), $this->getRules()));
@@ -116,7 +116,7 @@ new #[Layout('layouts.form')] class extends Component
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <x-header-info title="Register User" desc="daftarkan user baru untuk mengakses sistem" />
-            <div class="flex gap-5">
+            <div class="{{$mode === 'edit' ? 'hidden' : 'flex'}}  gap-5">
                 <x-header-action mode="single" :href="route('users.create.single')" class="{{$mode === 'single' ? 'bg-black text-white' : ''}}" />
                 <x-header-action mode="import" :href="route('users.create.import')" class="{{$mode === 'import' ? 'bg-black text-white' : ''}}" />
             </div>
@@ -127,27 +127,26 @@ new #[Layout('layouts.form')] class extends Component
         @csrf
 
         @if ($mode === 'single')
-        @if (isset($user))
-        @method('PUT')
-        @endif
         <!-- Name -->
+        @dump($user)
+        <p>{{$user->fullname}}</p>
         <div>
             <x-input-label for="fullname" :value="__('Fullname')" />
-            <x-text-input id="fullname" class="block w-full" type="text" wire:model.live="fullname" :value="old('name') ?? $user->fullname ?? ''" autofocus autocomplete="name" placeholder="{{__('Fullname')}}" />
+            <x-text-input id="fullname" class="block w-full" type="text" wire:model.live="fullname" :value="$user->fullname" placeholder="{{__('Fullname')}}" />
             <x-input-error :messages="$errors->get('fullname')" class="mt-2" />
         </div>
 
         <!-- Username -->
         <div class="mt-4">
             <x-input-label for="username" :value="__('Username')" />
-            <x-text-input id="username" class="block w-full" type="text" wire:model.live="username" :value="old('username') ?? $user->username ?? ''" autofocus autocomplete="username" placeholder="{{__('Username')}}" />
+            <x-text-input id="username" class="block w-full" type="text" wire:model.live="username" :value="$user->username" placeholder="{{__('Username')}}" />
             <x-input-error :messages="$errors->get('username')" class="mt-2" />
         </div>
 
         <!-- Email Address -->
         <div class="mt-4">
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block w-full" type="email" wire:model.live="email" :value="old('email') ?? $user->email ?? ''" autocomplete="email" placeholder="{{__('Email')}}" />
+            <x-text-input id="email" class="block w-full" type="email" wire:model.live="email" :value="$user->email" placeholder="{{__('Email')}}" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 

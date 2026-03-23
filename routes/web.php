@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -28,16 +27,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('users')->name('users.')->group(function () {
         Route::livewire('/', 'pages::admin.users')->name('index');
-        // Route::get('data', [UserController::class, 'data'])->name(name: 'data'); // manual fetch AJAX
 
         Route::prefix('register')->name('create.')->group(function () {
             Route::livewire('single', 'pages::admin.users.register')->name('single');
             Route::livewire('import', 'pages::admin.users.register')->name('import');
         });
-
-        Route::get('edit/{userId}', [UserController::class, 'edit'])->name('edit');
-        Route::put('update/{userId}', [UserController::class, 'update'])->name('update');
-        Route::delete('delete/{id}', [UserController::class, 'destroy'])->name('destroy');
     });
 });
 

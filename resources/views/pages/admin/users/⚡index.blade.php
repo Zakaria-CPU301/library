@@ -92,7 +92,7 @@ new class extends Component
                             <td class="border px-4 py-3 capitalize text-center">{{ $user->role }}</td>
                             <td class="border px-4 py-3 capitalize">{{ $user->collection->collection_name }}</td>
                             <td class="border px-1 py-1 text-center"><a href="" class="inline-flex bg-yellow-500 px-4 py-2 text-white rounded-md">{{ __('Lihat') }}</a></td>
-                            <td class="border px-1 py-1 text-center"><a href="{{route('users.edit', ['userId' => $user->id, 'action' => 'single'])}}" class="inline-flex bg-blue-500 px-4 py-2 text-white rounded-md">{{ __('Edit') }}</a></td>
+                            {{-- Admin Tidak Bisa Edit User --}}
                             <td class="border px-1 py-1 text-center">
                                 <form action="{{route('users.destroy', $user->id)}}" method="post">
                                     @csrf
