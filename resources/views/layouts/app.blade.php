@@ -38,10 +38,10 @@
             @endisset
 
             <!-- Page Content -->
+            @livewireScripts
             <main>
                 {{ $slot }}
             </main>
-            @livewireScripts
         </div>
     </body>
 </html>

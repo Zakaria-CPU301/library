@@ -105,8 +105,8 @@ new #[Layout('layouts.form')] class extends Component
     // end hook with save
     public function save()
     {
-        $this->validate(array_merge($this->importRules(), $this->getRules()));
-        $this->User(); //DEVELOPMENT ZONE TIME
+        $this->validate(array_merge($this->singleRules(), $this->importRules(), $this->getRules()));
+        $this->User();
 
         $this->redirectRoute('users.index', navigate: true); //reference
     }
@@ -123,7 +123,7 @@ new #[Layout('layouts.form')] class extends Component
         </div>
     </x-slot>
 
-    <form method="POST" wire:submit="save" id="siggle-register-form">
+    <form wire:submit="save" id="siggle-register-form">
         @csrf
 
         @if ($mode === 'single')
