@@ -8,7 +8,7 @@ use Livewire\Attributes\On;
 
 new class extends Component
 {
-    public $collections = '';
+    public $collections;
     public $isActive = 0;
 
     public $perPage = [0 => 15];
@@ -19,11 +19,11 @@ new class extends Component
             $this->perPage[$c->id] = 10;
         }
     }
-    
-    #[On('load-more')]
+
     public function loadMore() {
         $this->perPage[$this->isActive] += 10;
     }
+    
 
     public $searchKey = '';
     #[On('search-key')]
@@ -133,10 +133,11 @@ new class extends Component
                         </div>
                     </div>
                 </div>
-                <div class="bg-slate-100 w-full flex justify-center py-5" id="spinner-load-data">
+                <div wire:loading.remove wire:target="filterUser" class="bg-slate-100 w-full flex justify-center py-5" id="spinner-load-data">
                     @if ($users->hasMorePages())
-                    <div wire:loading>
-                        <x-loading-state-session class="w-8 h-8" wire:target="load-more" />
+                    <div>
+                        <button type="button" wire:click="loadMore" id="loadClick" hidden></button>
+                        <x-loading-state-session class="w-8 h-8" wire:loading wire:target="loadMore" />
                     </div>
                     @else 
                         <div class="font-bold capitalize">sudah di ujung halaman</div>

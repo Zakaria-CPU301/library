@@ -16,7 +16,7 @@ const observer = new IntersectionObserver((entriesObject) => {
                     .classList.remove("contain-nav");
             }
         } else if (entry.target.id === 'spinner-load-data' && entry.isIntersecting) {
-            Livewire.dispatch('load-more');
+            document.getElementById('loadClick').click()
         }
     });
 });
