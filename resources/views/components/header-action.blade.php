@@ -1,1 +1,1 @@
-<a wire:navigate {{ $attributes->merge(['class' => 'items-center text-xs capitalize py-2 px-4 rounded cursor-pointer']) }}">{{$mode}}</a>
+<button {{ $attributes->class('items-center text-xs capitalize py-2 px-4 rounded cursor-pointer hover:bg-slate-700 hover:text-white') }}">{{$mode}}</button>

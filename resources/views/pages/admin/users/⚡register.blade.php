@@ -14,12 +14,24 @@ new #[Layout('layouts.form')] class extends Component
 {
     // -------------------------- first render page -----------------------
     public $mode;
-    public function mount(User $user)
+    public $noticeElement;
+    public function mount()
     {
+        $this->noticeElement = session('slut') ?? 'true';
         $this->mode = request()->segment(3);
         $this->dispatch('currently-page', current: request()->segment(1));
     }
-    
+    public function toImport()
+    {
+        session(['slut' => 'false']);
+        $this->redirectRoute('users.create.import', navigate: true);
+    }
+
+    public function toSingle() 
+    {
+        $this->redirectRoute('users.create.single',  navigate: true);
+    }
+
     // ----------------------------- validation ---------------------------
     use WithFileUploads;
     public $import;
@@ -82,13 +94,13 @@ new #[Layout('layouts.form')] class extends Component
     {
         if ($this->mode === 'import') {
             Excel::import(new UsersImport($this->newCollection(), $this->role), $this->import->getRealPath());
-            
+
             session()->flash('success', 'User imported successfully');
         } else if ($this->mode === 'single') {
             $user = $this->validate(array_merge($this->getRules(), $this->singleRules()));
             $user['collection_id'] = $this->newCollection();
             User::create($user);
-            
+
             session()->flash('success', 'User registered successfully');
         }
     }
@@ -112,7 +124,7 @@ new #[Layout('layouts.form')] class extends Component
             $validate = array_merge($this->getRules(), $this->importRules());
         }
         $this->validate($validate);
-        
+
         try {
             $this->user();
             $this->redirectRoute('users.index', navigate: true); //reference
@@ -123,105 +135,106 @@ new #[Layout('layouts.form')] class extends Component
 };
 ?>
 <div>
-    <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <x-header-info title="Register User" desc="daftarkan user baru untuk mengakses sistem" />
-            <div class="{{$mode === 'edit' ? 'hidden' : 'flex'}}  gap-5">
-                <x-header-action mode="single" :href="route('users.create.single')" class="{{$mode === 'single' ? 'bg-black text-white' : ''}}" />
-                <x-header-action mode="import" :href="route('users.create.import')" class="{{$mode === 'import' ? 'bg-black text-white' : ''}}" />
+    <x-header>
+        <x-header-info title="Register User" desc="daftarkan user baru untuk mengakses sistem" />
+        <div class="flex items-center justify-center gap-5">
+            <x-header-action mode="single" wire:click="toSingle" class="{{$mode === 'single' ? 'bg-black text-white' : 'bg-slate-200'}}" />
+            <x-header-action mode="import" wire:click="toImport" class="{{$mode === 'import' ? 'bg-black text-white' : 'bg-slate-200'}} {{$noticeElement === 'true' ? 'animate-bounce' : ''}}" />
+        </div>
+    </x-header>
+
+    <x-main-form>
+        <form wire:submit="save" id="siggle-register-form" class="w-full">
+            @csrf
+
+            @if ($mode === 'single')
+            <!-- Name -->
+            <div>
+                <x-input-label for="fullname" :value="__('Fullname')" />
+                <x-text-input id="fullname" class="block w-full" type="text" wire:model.live="fullname" placeholder="{{__('Fullname')}}" />
+                <x-input-error :messages="$errors->get('fullname')" class="mt-2" />
             </div>
-        </div>
-    </x-slot>
 
-    <form wire:submit="save" id="siggle-register-form">
-        @csrf
-
-        @if ($mode === 'single')
-        <!-- Name -->
-        <div>
-            <x-input-label for="fullname" :value="__('Fullname')" />
-            <x-text-input id="fullname" class="block w-full" type="text" wire:model.live="fullname" placeholder="{{__('Fullname')}}" />
-            <x-input-error :messages="$errors->get('fullname')" class="mt-2" />
-        </div>
-
-        <!-- Username -->
-        <div class="mt-4">
-            <x-input-label for="username" :value="__('Username')" />
-            <x-text-input id="username" class="block w-full" type="text" wire:model.live="username" placeholder="{{__('Username')}}" />
-            <x-input-error :messages="$errors->get('username')" class="mt-2" />
-        </div>
-
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block w-full" type="email" wire:model.live="email" placeholder="{{__('Email')}}" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block w-full"
-                type="password"
-                wire:model.live="password"
-                placeholder="{{__('Password')}}"
-                autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Confirm Password -->
-        {{-- <div class="mt-4">
-                <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-                <x-text-input id="password_confirmation" class="block w-full"
-                                type="password"
-                                wire:model="password_confirmation" required autocomplete="new-password" />
-
-                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-            </div> --}}
-
-        @elseif ($mode === 'import')
-        <div class="mt-4">
-            <x-input-label for="file" :value="__('Import File')" class="mt-2" />
-            <div class="flex items-center border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-2 w-full">
-                <input type="file" wire:model="import" accept=".xlsx,.xls,.csv" id="file" class="block px-4 py-2 w-full" />
-                <svg aria-hidden="true" wire:target="import" wire:loading class="w-5 h-5 text-neutral-quaternary me-5 animate-spin text-white fill-gray-400" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
-                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
-                </svg>
-                <span class="sr-only">Loading...</span>
+            <!-- Username -->
+            <div class="mt-4">
+                <x-input-label for="username" :value="__('Username')" />
+                <x-text-input id="username" class="block w-full" type="text" wire:model.live="username" placeholder="{{__('Username')}}" />
+                <x-input-error :messages="$errors->get('username')" class="mt-2" />
             </div>
-            <x-input-error :messages="$errors->get('import')" class="" />
-        </div>
-        @endif
 
-        <div class="mt-4" wire:ignore>
-            <x-input-label for="role" :value="__('role')" />
-            <x-indicator-information-ping info="Role tidak bisa di tambah" />
-            <livewire:tom-select-selection placeholder="Pilih role" wire:model.live='role' id="role">
-                <option value="admin">Admin</option>
-                <option value="user">User</option>
-            </livewire:tom-select-selection>
-        </div>
-        <x-input-error :messages="$errors->get('role')" class="mt-2" />
+            <!-- Email Address -->
+            <div class="mt-4">
+                <x-input-label for="email" :value="__('Email')" />
+                <x-text-input id="email" class="block w-full" type="email" wire:model.live="email" placeholder="{{__('Email')}}" />
+                <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            </div>
 
-        <div class="mt-4" wire:ignore>
-            <x-input-label for="collection" :value="__('Select Collection')" class="mt-2" />
-            <x-indicator-information-ping info="Penambahan koleksi harus memiliki huruf" />
-            <livewire:tom-select-selection placeholder="Pilih koleksi yang sesuai" wire:model.live='collection_id' id="collection">
-                @foreach (App\Models\Collection::all() as $collection)
-                <option value="{{$collection->id}}">{{$collection->collection_name}}</option>
-                @endforeach
-            </livewire:tom-select-selection>
-        </div>
-        <x-input-error :messages="$errors->get('collection_id')" />
+            <!-- Password -->
+            <div class="mt-4">
+                <x-input-label for="password" :value="__('Password')" />
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button wire:confirm="are you sure wkwk" class="ms-4">
-                {{ __('Import') }}
-            </x-primary-button>
-        </div>
-    </form>
+                <x-text-input id="password" class="block w-full"
+                    type="password"
+                    wire:model.live="password"
+                    placeholder="{{__('Password')}}"
+                    autocomplete="new-password" />
+
+                <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            </div>
+
+            <!-- Confirm Password -->
+            {{-- <div class="mt-4">
+            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+
+            <x-text-input id="password_confirmation" class="block w-full"
+                            type="password"
+                            wire:model="password_confirmation" required autocomplete="new-password" />
+
+            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        </div> --}}
+
+            @elseif ($mode === 'import')
+            <div class="mt-4">
+                <x-indicator-information-ping info="Diperlukan heading kolom: username, fullname, email, password pada file excel" />
+                <x-input-label for="file" :value="__('Import File')" class="mt-2" />
+                <div class="flex items-center border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-2 w-full">
+                    <input type="file" wire:model="import" accept=".xlsx,.xls,.csv" id="file" class="block px-4 py-2 w-full" />
+                    <svg aria-hidden="true" wire:target="import" wire:loading class="w-5 h-5 text-neutral-quaternary me-5 animate-spin text-white fill-gray-400" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+                        <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                    </svg>
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <x-input-error :messages="$errors->get('import')" class="" />
+            </div>
+            @endif
+
+            <div class="mt-4" wire:ignore>
+                <x-input-label for="role" :value="__('role')" />
+                <x-indicator-information-ping info="Role tidak bisa di tambah" />
+                <livewire:tom-select-selection placeholder="Pilih role" wire:model.live='role' id="role">
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
+                </livewire:tom-select-selection>
+            </div>
+            <x-input-error :messages="$errors->get('role')" class="mt-2" />
+
+            <div class="mt-4" wire:ignore>
+                <x-input-label for="collection" :value="__('Select Collection')" class="mt-2" />
+                <x-indicator-information-ping info="Penambahan koleksi harus memiliki huruf" />
+                <livewire:tom-select-selection placeholder="Pilih koleksi yang sesuai" wire:model.live='collection_id' id="collection">
+                    @foreach (App\Models\Collection::all() as $collection)
+                    <option value="{{$collection->id}}">{{$collection->collection_name}}</option>
+                    @endforeach
+                </livewire:tom-select-selection>
+            </div>
+            <x-input-error :messages="$errors->get('collection_id')" />
+
+            <div class="flex items-center justify-end mt-4">
+                <x-primary-button wire:confirm="are you sure wkwk" class="ms-4">
+                    {{ __('Import') }}
+                </x-primary-button>
+            </div>
+        </form>
+    </x-main-form>
 </div>

@@ -34,20 +34,10 @@
             @if(Auth::user())
                 @include('layouts.navigation')
             @endif
-            
-            @isset($header)
-                <header class="w-full bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
 
-            <div class="flex-1 flex justify-center items-center">
-                <div class="w-full sm:max-w-md px-5 py-5 bg-white shadow-md sm:rounded-lg">
-                    {{ $slot }}
-                </div>
-            </div>
+            <main>
+                {{ $slot }}
+            </main>
             @livewireScripts
         </div>
     </body>

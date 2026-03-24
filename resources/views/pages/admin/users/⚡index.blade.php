@@ -50,8 +50,9 @@ new class extends Component
         session()->flash('success', 'akun berhasil di hapus');
     }
 
-    // public function save($param) {
-    // }
+    public function notice() {
+        dd('ko');
+    }
 };
 ?>
 <div>
