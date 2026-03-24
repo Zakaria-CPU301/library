@@ -21,6 +21,7 @@ new class extends Component
         }
     }
     
+    #[On('load-more')]
     public function loadMore() {
         $this->perPage[$this->isActive] += 10;
     }
@@ -48,10 +49,6 @@ new class extends Component
         $this->user = $userId;
         User::findOrFail($this->user)->delete();
         session()->flash('success', 'akun berhasil di hapus');
-    }
-
-    public function notice() {
-        dd('ko');
     }
 };
 ?>
@@ -91,7 +88,6 @@ new class extends Component
                             <th class="border w-[25%]" colspan="3">Action</th>
                         </tr>
                     </thead>
-                    {{-- @dd($users) --}}
                     <tbody id="view-data">
                         @forelse($users as $user)
 
@@ -122,12 +118,11 @@ new class extends Component
                         </div>
                     </div>
                 </div>
-                <div wire:loading.remove wire:target="filterUser" class="bg-slate-100 w-full flex justify-center py-5" id="spinner-load-data">
+                <div class="bg-slate-100 w-full flex justify-center py-5" id="spinner-load-data">
                     @if ($users->hasMorePages())
-                        <div>
-                            <x-loading-state-session />
-                            <span class="sr-only">Loading...</span>
-                        </div>
+                    <div wire:loading>
+                        <x-loading-state-session class="w-8 h-8" wire:target="load-more" />
+                    </div>
                     @else 
                         <div class="font-bold capitalize">sudah di ujung halaman</div>
                     @endif
