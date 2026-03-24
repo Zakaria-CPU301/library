@@ -10,7 +10,6 @@ new class extends Component
 {
     public $collections = '';
     public $isActive = 0;
-    public $user = '';
 
     public $perPage = [0 => 15];
 
@@ -45,10 +44,20 @@ new class extends Component
         $this->isActive = $param;
     }
 
+    public $user;
     public function destroyUser($userId) {
         $this->user = $userId;
         User::findOrFail($this->user)->delete();
         session()->flash('success', 'akun berhasil di hapus');
+    }
+
+    public $statusEnum = ['active', 'disabled'];
+    public function suspendedAccount($userId) {
+        $this->user = $userId;
+        $statusAccount = User::findOrFail($this->user);
+        $currentStatus = $statusAccount->status;
+        $statusMissing = collect($this->statusEnum)->diff($currentStatus);
+        $statusAccount->update(['status' => $statusMissing->first()]);
     }
 };
 ?>
@@ -99,7 +108,13 @@ new class extends Component
                             <td class="border px-4 py-3 capitalize text-center">{{ $user->role }}</td>
                             <td class="border px-4 py-3 capitalize">{{ $user->collection->collection_name }}</td>
                             <td class="border px-1 py-1 text-center"><a href="" class="inline-flex bg-yellow-500 px-4 py-2 text-white rounded-md">{{ __('Lihat') }}</a></td>
-                            <td class="border px-1 py-1 text-center"><a href="" class="inline-flex bg-gray-800 px-4 py-2 text-white rounded-md">{{ __('Blokir') }}</a></td>
+                            <td class="border px-1 py-1 text-center"><button wire:confirm="Are you sure want to {{collect($statusEnum)->diff($user->status)->first()}} this account?" wire:click="suspendedAccount({{$user->id}})" class="inline-flex bg-gray-800 px-4 py-2 text-white rounded-md">
+                                @if ($user->status === 'active')
+                                    {{ __('Blokir') }}
+                                @else
+                                    {{ __('Buka Blokir') }}
+                                @endif
+                            </button></td>
                             <td class="border px-1 py-1 text-center">
                                     <button wire:click="destroyUser({{$user->id}})" wire:confirm="apakah kamu yakin ingin menghapus user ini?" class="inline-flex bg-red-500 px-4 py-2 text-white rounded-md hover:cursor-pointer">{{ __('Hapus') }}</button>
                             </td>
