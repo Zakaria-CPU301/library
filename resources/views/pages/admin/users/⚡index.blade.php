@@ -8,9 +8,8 @@ use Livewire\Attributes\On;
 
 new class extends Component
 {
-    public $collections = '';
+    public $collections;
     public $isActive = 0;
-    public $user = '';
 
     public $perPage = [0 => 15];
 
@@ -20,11 +19,11 @@ new class extends Component
             $this->perPage[$c->id] = 10;
         }
     }
-    
-    #[On('load-more')]
+
     public function loadMore() {
         $this->perPage[$this->isActive] += 10;
     }
+    
 
     public $searchKey = '';
     #[On('search-key')]
@@ -45,10 +44,20 @@ new class extends Component
         $this->isActive = $param;
     }
 
+    public $user;
     public function destroyUser($userId) {
         $this->user = $userId;
         User::findOrFail($this->user)->delete();
         session()->flash('success', 'akun berhasil di hapus');
+    }
+
+    public $statusEnum = ['active', 'disabled'];
+    public function suspendedAccount($userId) {
+        $this->user = $userId;
+        $statusAccount = User::findOrFail($this->user);
+        $currentStatus = $statusAccount->status;
+        $statusMissing = collect($this->statusEnum)->diff($currentStatus);
+        $statusAccount->update(['status' => $statusMissing->first()]);
     }
 };
 ?>
@@ -99,7 +108,13 @@ new class extends Component
                             <td class="border px-4 py-3 capitalize text-center">{{ $user->role }}</td>
                             <td class="border px-4 py-3 capitalize">{{ $user->collection->collection_name }}</td>
                             <td class="border px-1 py-1 text-center"><a href="" class="inline-flex bg-yellow-500 px-4 py-2 text-white rounded-md">{{ __('Lihat') }}</a></td>
-                            <td class="border px-1 py-1 text-center"><a href="" class="inline-flex bg-gray-800 px-4 py-2 text-white rounded-md">{{ __('Blokir') }}</a></td>
+                            <td class="border px-1 py-1 text-center"><button wire:confirm="Are you sure want to {{collect($statusEnum)->diff($user->status)->first()}} this account?" wire:click="suspendedAccount({{$user->id}})" class="inline-flex bg-gray-800 px-4 py-2 text-white rounded-md">
+                                @if ($user->status === 'active')
+                                    {{ __('Blokir') }}
+                                @else
+                                    {{ __('Buka Blokir') }}
+                                @endif
+                            </button></td>
                             <td class="border px-1 py-1 text-center">
                                     <button wire:click="destroyUser({{$user->id}})" wire:confirm="apakah kamu yakin ingin menghapus user ini?" class="inline-flex bg-red-500 px-4 py-2 text-white rounded-md hover:cursor-pointer">{{ __('Hapus') }}</button>
                             </td>
@@ -118,10 +133,11 @@ new class extends Component
                         </div>
                     </div>
                 </div>
-                <div class="bg-slate-100 w-full flex justify-center py-5" id="spinner-load-data">
+                <div wire:loading.remove wire:target="filterUser" class="bg-slate-100 w-full flex justify-center py-5" id="spinner-load-data">
                     @if ($users->hasMorePages())
-                    <div wire:loading>
-                        <x-loading-state-session class="w-8 h-8" wire:target="load-more" />
+                    <div>
+                        <button type="button" wire:click="loadMore" id="loadClick" hidden></button>
+                        <x-loading-state-session class="w-8 h-8" wire:loading wire:target="loadMore" />
                     </div>
                     @else 
                         <div class="font-bold capitalize">sudah di ujung halaman</div>
