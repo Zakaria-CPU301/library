@@ -5,9 +5,16 @@ use Livewire\Attributes\Validate;
 
 new class extends Component
 {
+    #[Validate('required')]
     public $search = '';
+
+    public function updated() {
+        $this->dispatch('search-key', trim($this->search, ' '));
+    }
+
     public function save() {
-        $this->dispatch('search-key', $this->search);
+        $this->validate();
+        $this->dispatch('search-key', trim($this->search, ' '));
     }
 };
 ?>
@@ -17,8 +24,8 @@ new class extends Component
 
     <div class="relative">
         <div class="pointer-events-none absolute inset-y-0 left-0 flex ps-3 pe-px">
-            <x-loading-state-session class="w-4 h-4 self-center" wire:loading wire:target="save"/>
-            <svg class="w-4 h-4 text-body self-center" wire:loading.remove wire:target="save" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <x-loading-state-session class="w-4 h-4 self-center" wire:loading wire:target="updated"/>
+            <svg class="w-4 h-4 text-body self-center" wire:loading.remove wire:target="updated" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
                 d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
             </svg>
@@ -27,7 +34,7 @@ new class extends Component
         <input 
             type="search"
             id="search"
-            wire:model="search"
+            wire:model.live="search"
             placeholder="Search"
             class="block w-full rounded-base border border-default-medium bg-neutral-secondary-medium 
                 p-3 pl-9 text-sm text-heading placeholder:text-body shadow-xs 

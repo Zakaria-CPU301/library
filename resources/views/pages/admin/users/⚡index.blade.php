@@ -8,22 +8,22 @@ use Livewire\Attributes\On;
 
 new class extends Component
 {
-    public $collections;
-    public $isActive = 0;
-
+    public $collections = [];
+    public $activeCollection = 0;
+    
     public $perPage = [0 => 15];
 
     public function mount() {
         $this->collections = Collection::all();
         foreach ($this->collections as $c){
-            $this->perPage[$c->id] = 10;
+            $this->perPage[$c->id] = 1;
         }
-    }
-
+        $this->perPage[$this->activeCollection] += 10;
+        }
+        
     public function loadMore() {
-        $this->perPage[$this->isActive] += 10;
+        $this->perPage[$this->activeCollection] += 10;
     }
-    
 
     public $searchKey = '';
     #[On('search-key')]
@@ -33,15 +33,11 @@ new class extends Component
 
     public function render() {
         $query = User::with('collection')->latest('fullname')->whereAny(['fullname', 'username', 'email'], 'LIKE', '%' . $this->searchKey . '%');
-        if ($this->isActive != 0) {
-            $query->where('collection_id', $this->isActive);
+        if ($this->activeCollection != 0) {
+            $query->where('collection_id', $this->activeCollection);
         }
-        $users = $query->paginate($this->perPage[$this->isActive]);
+        $users = $query->paginate($this->perPage[$this->activeCollection]);
         return view('pages.admin.users.⚡index', ['users' => $users]);
-    }
-
-    public function filterUser($param) {
-        $this->isActive = $param;
     }
 
     public $user;
@@ -72,15 +68,7 @@ new class extends Component
     </x-header>
 
     <div class="flex flex-col px-10">
-        <div id="nav-collection" wire:ignore.self class="mt-1 px-5 py-5 sticky top-5 duration-500 rounded-lg">
-            <div id="collection" class="flex space-x-4 overflow-x-scroll">
-                @csrf
-                <button type="button" wire:click="filterUser({{0}})" class="{{$isActive == 0 ? 'bg-gray-900 text-white' : ''}} px-4 py-2 rounded-lg inline-flex font-bold capitalize cursor-pointer hover:bg-slate-700 hover:text-white duration-100">{{ __('semua') }}</button>
-                @foreach ($collections as $c)
-                    <button type="button" wire:click="filterUser({{$c->id}})" class="{{$isActive == $c->id ? 'bg-gray-900 text-white' : ''}} whitespace-nowrap px-4 py-2 rounded-lg inline-flex font-bold capitalize cursor-pointer hover:bg-slate-700 hover:text-white duration-200 ">{{ $c->collection_name }}</button>
-                @endforeach
-            </div>
-        </div>
+        <livewire:nav-slide-filter :toggleButton="$collections" wire:model.live="activeCollection" />
 
         <div class="flex justify-center">
             <x-main-section>
@@ -120,25 +108,53 @@ new class extends Component
                             </td>
                         </tr>
                         @empty
-                            <tr wire:loading.remove wire:target="filterUser">
-                                <td colspan="9" class="border px-4 py-3 text-center capitalize">pencarian data pengguna <b>{{isset($searchKey) ? $searchKey : ''}}</b> untuk koleksi <b>{{$collections->firstWhere('id', $isActive)['collection_name'] ?? 'semua'}}</b> tidak ditemukan</td>
-                            </tr>
+                            <div >
+                                <tr>
+                                    <td wire:loading.remove colspan="9" class="px-4 py-10 text-center">
+                                        <div class="flex flex-col items-center justify-center gap-3">
+                                            {{-- Icon --}}
+                                            <div class="text-4xl text-gray-400">
+                                                👨‍👩‍👧‍👦
+                                            </div>
+                                            {{-- Title --}}
+                                            <h2 class="text-base font-semibold text-gray-700">
+                                                Data pengguna tidak ditemukan
+                                            </h2>
+                                            {{-- Description --}}
+                                            <p class="text-sm text-gray-500">
+                                                @if($searchKey)
+                                                    Tidak ada hasil untuk
+                                                    <span class="font-medium text-gray-700">"{{ $searchKey }}"</span>
+                                                @endif
+                                                @if($activeCollection)
+                                                    di koleksi
+                                                    <span class="font-medium text-gray-700">
+                                                        {{ $collections->firstWhere('id', $activeCollection)['collection_name'] ?? 'tidak diketahui' }}
+                                                    </span>
+                                                @else
+                                                    di semua koleksi
+                                                @endif
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </div>
                         @endforelse
                     </tbody> 
                 </table>
-                <div wire:loading wire:target="filterUser" class="w-full">
-                    <div class="flex justify-center py-3 border-x border-b">
+                <div wire:loading wire:target="activeCollection" class="w-full">
+                    <div class="flex justify-center py-3">
                         <div class="px-2 py-px ring-1 ring-inset ring-brand-subtle text-center text-fg-brand-strong text-md font-medium rounded-sm bg-brand-softer animate-pulse">
                             Loading...
                         </div>
                     </div>
                 </div>
-                <div wire:loading.remove wire:target="filterUser" class="bg-slate-100 w-full flex justify-center py-5" id="spinner-load-data">
+                <div wire:loading.remove wire:target="activeCollection" class="w-full flex justify-center py-5" id="spinner-load-data">
                     @if ($users->hasMorePages())
-                    <div>
-                        <button type="button" wire:click="loadMore" id="loadClick" hidden></button>
-                        <x-loading-state-session class="w-8 h-8" wire:loading wire:target="loadMore" />
-                    </div>
+                        <div>
+                            <button type="button" wire:click="loadMore" id="loadClick" hidden></button>
+                            <x-loading-state-session class="w-8 h-8" wire:loading wire:target="loadMore" />
+                        </div>
                     @else 
                         <div class="font-bold capitalize">sudah di ujung halaman</div>
                     @endif

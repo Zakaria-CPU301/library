@@ -33,17 +33,18 @@ new #[Layout('layouts.form')] class extends Component
     }
 
     // ----------------------------- validation ---------------------------
-    use WithFileUploads;
-    public $import;
+    #[Validate('required')]
+    public $fileRealPath;
+    #[On('file-upload')]
+    public function import($path) {
+        $this->fileRealPath = $path;
+        $this->validateOnly('fileRealPath');
+    }
+    
     public $fullname = '';
     public $username = '';
     public $email = '';
     public $password = '';
-
-    public function importRules()
-    {
-        return ['import' => ['required', 'file', 'mimes:xlsx,xls,csv', 'max:1024']];
-    }
 
     public function singleRules()
     {
@@ -56,9 +57,9 @@ new #[Layout('layouts.form')] class extends Component
     }
 
     // ---------------------- re-render for live get error in validataion -------------------------
-    public function updatedImport()
+    public function updatedFileRealPath()
     {
-        $this->validateOnly('import', $this->importRules());
+        $this->validateOnly('fileRealPath');
     }
 
     public function updated($property)
@@ -93,7 +94,7 @@ new #[Layout('layouts.form')] class extends Component
     public function user()
     {
         if ($this->mode === 'import') {
-            Excel::import(new UsersImport($this->newCollection(), $this->role), $this->import->getRealPath());
+            Excel::import(new UsersImport($this->newCollection(), $this->role), $this->fileRealPath);
 
             session()->flash('success', 'User imported successfully');
         } else if ($this->mode === 'single') {
@@ -121,7 +122,7 @@ new #[Layout('layouts.form')] class extends Component
         if ($this->mode === 'single') {
             $validate = array_merge($this->getRules(), $this->singleRules());
         } else {
-            $validate = array_merge($this->getRules(), $this->importRules());
+            $validate = $this->getRules();
         }
         $this->validate($validate);
 
@@ -144,7 +145,7 @@ new #[Layout('layouts.form')] class extends Component
     </x-header>
 
     <x-main-form>
-        <form wire:submit="save" id="siggle-register-form" class="w-full">
+        <form wire:submit="save" class="w-full">
             @csrf
 
             @if ($mode === 'single')
@@ -194,20 +195,16 @@ new #[Layout('layouts.form')] class extends Component
         </div> --}}
 
             @elseif ($mode === 'import')
-            <div class="mt-4">
-                <x-indicator-information-ping info="Diperlukan heading kolom: username, fullname, email, password pada file excel" />
-                <x-input-label for="file" :value="__('Import File')" class="mt-2" />
-                <div class="flex items-center border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-2 w-full">
-                    <input type="file" wire:model="import" accept=".xlsx,.xls,.csv" id="file" class="block px-4 py-2 w-full" />
-                    <x-loading-state-session class="h-5 w-5" wire:loading wire:target="import" />
+                <div class="mt-4">
+                    <x-indicator-information-ping>Diperlukan heading kolom: username, fullname, email, password pada file excel</x-indicator-information-ping>
+                    <livewire:file-input wire:model="import" label="import file" acceptExtention=".xlsx,.xls,.csv"/>
+                    <x-input-error :messages="$errors->get('fileRealPath')" />
                 </div>
-                <x-input-error :messages="$errors->get('import')" class="" />
-            </div>
             @endif
 
             <div class="mt-4" wire:ignore>
                 <x-input-label for="role" :value="__('role')" />
-                <x-indicator-information-ping info="Role tidak bisa di tambah" />
+                <x-indicator-information-ping>Role tidak bisa di tambah</x-indicator-information-ping>
                 <livewire:tom-select-selection placeholder="Pilih role" wire:model.live='role' id="role">
                     <option value="admin">Admin</option>
                     <option value="user">User</option>
@@ -217,7 +214,7 @@ new #[Layout('layouts.form')] class extends Component
 
             <div class="mt-4" wire:ignore>
                 <x-input-label for="collection" :value="__('Select Collection')" class="mt-2" />
-                <x-indicator-information-ping info="Penambahan koleksi harus memiliki huruf" />
+                <x-indicator-information-ping>Penambahan koleksi harus memiliki huruf</x-indicator-information-ping>
                 <livewire:tom-select-selection placeholder="Pilih koleksi yang sesuai" wire:model.live='collection_id' id="collection">
                     @foreach (App\Models\Collection::all() as $collection)
                     <option value="{{$collection->id}}">{{$collection->collection_name}}</option>

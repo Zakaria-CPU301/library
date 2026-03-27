@@ -35,7 +35,7 @@
                 @include('layouts.navigation')
             @endif
 
-            <main>
+            <main class="flex flex-col w-full min-h-screen">
                 {{ $slot }}
             </main>
             @livewireScripts
