@@ -11,11 +11,6 @@ new class extends Component
     public function updated() {
         $this->dispatch('search-key', trim($this->search, ' '));
     }
-
-    public function save() {
-        $this->validate();
-        $this->dispatch('search-key', trim($this->search, ' '));
-    }
 };
 ?>
 
@@ -24,8 +19,8 @@ new class extends Component
 
     <div class="relative">
         <div class="pointer-events-none absolute inset-y-0 left-0 flex ps-3 pe-px">
-            <x-loading-state-session class="w-4 h-4 self-center" wire:loading wire:target="updated"/>
-            <svg class="w-4 h-4 text-body self-center" wire:loading.remove wire:target="updated" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <x-loading-state-session class="w-4 h-4 self-center" wire:loading wire:target="search"/>
+            <svg class="w-4 h-4 text-body self-center" wire:loading.remove wire:target="search" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
                 d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
             </svg>
@@ -40,14 +35,5 @@ new class extends Component
                 p-3 pl-9 text-sm text-heading placeholder:text-body shadow-xs 
                 focus:border-brand focus:ring-brand"
         />
-
-        <button 
-            type="submit"
-            class="absolute bottom-1.5 right-1.5 rounded bg-brand px-3 py-1.5 text-xs font-medium 
-                leading-5 text-white bg-black shadow-xs border border-transparent
-                hover:bg-brand-strong focus:outline-none focus:ring-4 focus:ring-brand-medium"
-        >
-            Search
-        </button>
     </div>
 </form>

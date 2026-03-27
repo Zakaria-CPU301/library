@@ -49,9 +49,11 @@ new class extends Component
 };
 ?>
 <div class="px-10">
-    <div class="flex justify-center py-5">
-        <livewire:search-input />
-    </div>
+    <x-header>
+        <div class="flex justify-center w-full">
+            <livewire:search-input />
+        </div>
+    </x-header>
 
     <livewire:nav-slide-filter :toggleButton="$categories" wire:model.live="activeCategory" />
 
@@ -126,28 +128,7 @@ new class extends Component
 
         <x-loading-indicator target="activeCategory" />
         
-        <div
-            wire:loading.remove
-            wire:target="activeCategory"
-            class="w-full flex justify-center py-6"
-            id="spinner-load-data">
-            @if ($books->hasMorePages())
-
-            <div class="flex items-center justify-center">
-                <button type="button" wire:click="loadMore" id="loadClick" hidden></button>
-
-                <x-loading-state-session
-                    class="w-8 h-8"
-                    wire:loading
-                    wire:target="loadMore" />
-            </div>
-
-            @else
-                <div class="text-sm font-medium text-gray-500">
-                    Sudah di ujung halaman
-                </div>
-            @endif
-        </div>
+        <x-has-more-page target="activeCategory" :datas="$books" />
 
     </div>
 </div>
