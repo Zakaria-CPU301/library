@@ -108,47 +108,42 @@ new class extends Component
                             </td>
                         </tr>
                         @empty
-                            <div >
-                                <tr>
-                                    <td wire:loading.remove colspan="9" class="px-4 py-10 text-center">
-                                        <div class="flex flex-col items-center justify-center gap-3">
-                                            {{-- Icon --}}
-                                            <div class="text-4xl text-gray-400">
-                                                👨‍👩‍👧‍👦
-                                            </div>
-                                            {{-- Title --}}
-                                            <h2 class="text-base font-semibold text-gray-700">
-                                                Data pengguna tidak ditemukan
-                                            </h2>
-                                            {{-- Description --}}
-                                            <p class="text-sm text-gray-500">
-                                                @if($searchKey)
-                                                    Tidak ada hasil untuk
-                                                    <span class="font-medium text-gray-700">"{{ $searchKey }}"</span>
-                                                @endif
-                                                @if($activeCollection)
-                                                    di koleksi
-                                                    <span class="font-medium text-gray-700">
-                                                        {{ $collections->firstWhere('id', $activeCollection)['collection_name'] ?? 'tidak diketahui' }}
-                                                    </span>
-                                                @else
-                                                    di semua koleksi
-                                                @endif
-                                            </p>
+                            <tr>
+                                <td colspan="9" class="px-4 py-10 text-center">
+                                    <div class="flex flex-col items-center justify-center gap-3">
+                                        {{-- Icon --}}
+                                        <div class="text-4xl text-gray-400">
+                                            👨‍👩‍👧‍👦
                                         </div>
-                                    </td>
-                                </tr>
-                            </div>
+                                        {{-- Title --}}
+                                        <h2 class="text-base font-semibold text-gray-700">
+                                            Data pengguna tidak ditemukan
+                                        </h2>
+                                        {{-- Description --}}
+                                        <p class="text-sm text-gray-500">
+                                            @if($searchKey)
+                                                Tidak ada hasil untuk
+                                                <span class="font-medium text-gray-700">"{{ $searchKey }}"</span>
+                                            @endif
+                                            @if($activeCollection)
+                                                di koleksi
+                                                <span class="font-medium text-gray-700">
+                                                    {{ $collections->firstWhere('id', $activeCollection)['collection_name'] ?? 'tidak diketahui' }}
+                                                </span>
+                                            @else
+                                                di semua koleksi
+                                            @endif
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
                         @endforelse
                     </tbody> 
                 </table>
-                <div wire:loading wire:target="activeCollection" class="w-full">
-                    <div class="flex justify-center py-3">
-                        <div class="px-2 py-px ring-1 ring-inset ring-brand-subtle text-center text-fg-brand-strong text-md font-medium rounded-sm bg-brand-softer animate-pulse">
-                            Loading...
-                        </div>
-                    </div>
-                </div>
+
+                <x-loading-indicator target="activeCollection" />
+
+                
                 <div wire:loading.remove wire:target="activeCollection" class="w-full flex justify-center py-5" id="spinner-load-data">
                     @if ($users->hasMorePages())
                         <div>
@@ -156,7 +151,9 @@ new class extends Component
                             <x-loading-state-session class="w-8 h-8" wire:loading wire:target="loadMore" />
                         </div>
                     @else 
-                        <div class="font-bold capitalize">sudah di ujung halaman</div>
+                        <div class="text-sm font-medium text-gray-500">
+                            Sudah di ujung halaman
+                        </div>
                     @endif
                 </div>
             </x-main-section>

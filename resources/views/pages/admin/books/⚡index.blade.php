@@ -93,15 +93,11 @@ new class extends Component
                             </svg>
                         </button>
                     </div>
-
                 </div>
             </div>
 
             @empty
-
-            {{-- EMPTY STATE --}}
             <div class="col-span-full flex flex-col items-center justify-center py-16 text-center">
-
                 <div class="text-gray-400 text-5xl mb-4">
                     📚
                 </div>
@@ -124,17 +120,15 @@ new class extends Component
                         </span>
                     </p>
                 @endif
-
             </div>
-
             @endforelse
-
         </div>
 
-        {{-- LOAD MORE --}}
+        <x-loading-indicator target="activeCategory" />
+        
         <div
             wire:loading.remove
-            wire:target="activeCollection"
+            wire:target="activeCategory"
             class="w-full flex justify-center py-6"
             id="spinner-load-data">
             @if ($books->hasMorePages())
@@ -149,11 +143,9 @@ new class extends Component
             </div>
 
             @else
-
-            <div class="text-sm font-medium text-gray-500">
-                Sudah di ujung halaman
-            </div>
-
+                <div class="text-sm font-medium text-gray-500">
+                    Sudah di ujung halaman
+                </div>
             @endif
         </div>
 
