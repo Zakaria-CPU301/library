@@ -1,6 +1,6 @@
 <nav class="bg-white border-b border-gray-100" id="main-navigation">
     <!-- Primary Navigation Menu -->
-    <div class="w-full px-4 flex justify-between h-16">
+    <div class="w-full px-6 flex justify-between h-16">
         <div class="flex">
             <!-- Humburger Menu -->
             <div class="h-16 flex justify-between items-center">
@@ -10,7 +10,7 @@
             </div>
             <!-- Logo -->
             <div class="flex items-center ms-8">
-                <a href="{{ route('dashboard') }}" class="flex items-center space-x-1.5" wire:navigate>
+                <a href="{{ route('index') }}" class="flex items-center space-x-1.5" wire:navigate>
                     <x-application-logo class="block h-8 w-auto fill-current text-gray-800" />
                     <h1 class="text-xl text-slate-800">Modern Library</h1>
                 </a>
@@ -70,7 +70,7 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+            <x-responsive-nav-link :href="route('index')" :active="request()->routeIs('books.index')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
         </div>

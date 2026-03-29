@@ -1,7 +1,5 @@
 <header {{$attributes->class("w-full flex justify-center")}} id="header">
-    <div class="max-w-7xl w-full py-6 px-4">
-        <div class="flex justify-between px-4">
-            {{$slot}}
-        </div>
+    <div class="w-full flex justify-between items-center py-6">
+        {{$slot}}
     </div>
 </header>

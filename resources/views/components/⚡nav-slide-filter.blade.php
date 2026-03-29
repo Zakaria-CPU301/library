@@ -15,7 +15,7 @@ new class extends Component
 };
 ?>
 
-<div id="nav-collection" wire:ignore.self class="mt-1 py-2 px-10 sticky top-5 duration-500 rounded-lg">
+<div id="filtering-partner" wire:ignore.self class="mt-1 py-2 px-10 sticky top-5 duration-500 rounded-lg">
     <div class="flex gap-5 overflow-x-scroll py-2">
         <button type="button" wire:click="filterUser(0)" class="{{$value == 0 ? 'bg-gray-900 text-white' : 'bg-[rgb(51,255,255)]'}} px-4 py-2 rounded-lg inline-flex font-bold capitalize cursor-pointer hover:bg-slate-700 hover:text-white duration-100">{{ __('semua') }}</button>
         @foreach ($toggleButton as $toggle)

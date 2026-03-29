@@ -12,8 +12,12 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+    <!-- Tom Select -->
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.5.2/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.5.2/dist/js/tom-select.complete.min.js"></script>
+    
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/element/observer.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
         *::-webkit-scrollbar {
@@ -28,18 +32,30 @@
 </head>
 
 <body class="font-sans antialiased">
-    <div class="min-h-screen max-w-full bg-gray-100">
-        <div class="flex flex-col" x-data="{open: JSON.parse(localStorage.getItem('sidebar-toggle') ?? 'true')}" >
-            @include('layouts.navigation')
-            
-            <div class="flex min-w-0">
-                @include('layouts.sidebar')
-            
-                <main class="min-w-0">
+    <div class="h-screen w-full bg-gray-100 overflow-hidden">
+        <div 
+            class="flex flex-col h-full" 
+            x-data="{open: JSON.parse(localStorage.getItem('sidebar-toggle') ?? 'true')}"
+        >
+
+            <div class="shrink-0">
+                @include('layouts.navigation')
+            </div>
+
+            <div class="flex flex-1 min-h-0">
+                <aside class="shrink-0 bg-white">
+                    <div class="h-full overflow-y-auto">
+                        @include('layouts.sidebar')
+                    </div>
+                </aside>
+
+                <main class="flex-1 min-w-0 overflow-y-auto px-12">
                     {{ $slot }}
                 </main>
+
             </div>
         </div>
+
         @livewireScripts
     </div>
 </body>

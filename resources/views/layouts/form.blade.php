@@ -16,7 +16,7 @@
         <script src="https://cdn.jsdelivr.net/npm/tom-select@2.5.2/dist/js/tom-select.complete.min.js"></script>
         
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/element/tom-select.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <style>
             *::-webkit-scrollbar {
@@ -29,15 +29,20 @@
             @livewireStyles
     </head>
     <body class="font-sans text-gray-900 antialiased bg-gray-100">
-        <div class="flex flex-col min-h-screen w-full pt-6 sm:pt-0">
-            
+        <div class="flex flex-col min-h-screen w-full pt-6 sm:pt-0" x-data="{open: JSON.parse(localStorage.getItem('sidebar-toggle') ?? 'true')}">
             @if(Auth::user())
                 @include('layouts.navigation')
             @endif
 
-            <main class="flex flex-col w-full min-h-screen">
-                {{ $slot }}
-            </main>
+            <div class="flex">
+                @if (Auth::user())
+                    @include('layouts.sidebar')
+                @endif
+                
+                <main class="flex flex-col w-full min-h-screen">
+                    {{ $slot }}
+                </main>
+            </div>
             @livewireScripts
         </div>
     </body>

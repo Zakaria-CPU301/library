@@ -14,5 +14,5 @@ new class extends Component
 <div>
     {{-- Nothing worth having comes easy. - Theodore Roosevelt --}}
     <p>hello world</p>
-    @dump($idBook)
+    @dump('belum ada WLeEEEelLellE')
 </div>

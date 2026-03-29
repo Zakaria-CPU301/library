@@ -58,13 +58,15 @@ new class extends Component
 };
 ?>
 <div>
-    <x-header class="shadow">
+    <x-header class="border-b">
         <x-header-info 
             title="Manajemen User" 
             desc="Kelola data user yang terdaftar di dalam sistem" 
         />
 
-        <livewire:search-input />
+        <div class="max-w-lg w-full">
+            <livewire:search-input />
+        </div>
     </x-header>
 
     <div class="flex flex-col px-10">

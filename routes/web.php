@@ -5,24 +5,26 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    $auth = Auth::check() ? route('dashboard') : route('login');
+    $auth = Auth::check() ? route('dashboard.index') : route('login');
     return redirect($auth);
-});
+})->name('index');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::middleware('role:admin')->group(function () {});
 
+
+    Route::prefix('dashboard')->name('dashboard.')->group(function () {
+        Route::livewire('/', 'pages::admin.dashboard')->name('index');
+    });
+
     Route::prefix('books')->name('books.')->group(function () {
-        Route::livewire('/', 'pages::users.books')->name('index');
-        Route::livewire('view-book{idBook}', 'pages::users.books.view-more')->name('view-more');
+        Route::livewire('/cihuy', 'pages::users.books')->name('idx');
+        Route::livewire('/', 'pages::admin.books')->name('index');
+        Route::livewire('view-book/{idBook}', 'pages::users.books.view-more')->name('view-more');
         Route::livewire('create', 'pages::admin.books.create')->name('create');
     });
 

@@ -12,7 +12,7 @@
 ?>
 
 <div wire:ignore>
-    <select wire:model.live="value" id="{{$id}}">
+    <select wire:model.live="value" id="{{$id}}" class="w-full">
         <option value="">{{$placeholder}}</option>
         {{$slot}}
     </select>

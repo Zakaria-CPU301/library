@@ -14,7 +14,7 @@ new class extends Component
 };
 ?>
 
-<form wire:submit.prevent="save" class="w-full self-center max-w-sm">
+<div class="w-full self-center">
     <label for="search" class="sr-only">Search</label>
 
     <div class="relative">
@@ -36,4 +36,4 @@ new class extends Component
                 focus:border-brand focus:ring-brand"
         />
     </div>
-</form>
+</div>

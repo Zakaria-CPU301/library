@@ -114,7 +114,7 @@ new #[Layout('layouts.form')] class extends Component
             <div class="mt-3" wire:ignore>
                 <x-input-label for="category">Kategori</x-input-label>
                 <x-indicator-information-ping>Penambahan kategori harus memiliki huruf</x-indicator-information-ping>
-                <livewire:tom-select-selection placeholder="Pilih kategori buku" wire:model.live="category_id" id="category">
+                <livewire:tom-select-selection placeholder="Pilih kategori buku" wire:model.live="category_id" id="categoryForm">
                     @foreach ($categories as $category)
                         <option value="{{$category->id}}">{{$category->category_name}}</option>
                     @endforeach
