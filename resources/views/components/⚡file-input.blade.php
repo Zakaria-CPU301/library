@@ -14,7 +14,7 @@ new class extends Component
     public $file;
 
     public function fileRules() {
-        return ['file' => ['required', 'file', 'mimes:' . str_replace(['.', 'image/'], '', $this->acceptExtention)]];
+        return ['file' => ['required', 'file', 'mimes:' . str_replace(['.', 'image/', ' '], '', $this->acceptExtention)]];
     }
 
     public function updatedFile(): void {

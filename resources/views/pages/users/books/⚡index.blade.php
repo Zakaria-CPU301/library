@@ -4,6 +4,7 @@ use Livewire\Component;
 use App\Models\Book;
 use App\Models\Category;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Url;
 
 new class extends Component
 {
@@ -38,13 +39,17 @@ new class extends Component
         if ($this->activeCategory != 0) $query->where('category_id', $this->activeCategory);
         $books = $query->paginate($this->perPage[$this->activeCategory]);
 
-        return view('pages.admin.books.⚡index', ['books' => $books]);
+        return view('pages.users.books.⚡index', ['books' => $books]);
     }
 
     public $isActive = '';
     public function filterUser($toggleId)
     {
         $this->isActive = $toggleId;
+    }
+
+    public function viewMore($idBook) {
+        $this->redirectRoute('books.view-more', ['idBook' => $idBook], true, true);
     }
 };
 ?>
@@ -88,7 +93,7 @@ new class extends Component
 
                     {{-- Button --}}
                     <div class="mt-auto">
-                        <button class="w-full flex items-center justify-center gap-2 text-sm bg-gray-100 border border-gray-300 hover:bg-gray-200 rounded-lg px-4 py-2 transition">
+                        <button wire:click="viewMore({{$book->id}})" class="w-full flex items-center justify-center gap-2 text-sm bg-gray-100 border border-gray-300 hover:bg-gray-200 rounded-lg px-4 py-2 transition">
                             Pinjam
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-width="2" d="M5 12h14m0 0-4 4m4-4-4-4" />
@@ -100,28 +105,30 @@ new class extends Component
 
             @empty
             <div class="col-span-full flex flex-col items-center justify-center py-16 text-center">
-                <div class="text-gray-400 text-5xl mb-4">
-                    📚
-                </div>
+                <div class="flex flex-col items-center justify-center gap-3">
+                    <div class="text-4xl text-gray-400">
+                        📚
+                    </div>
 
-                <h2 class="text-lg font-semibold text-gray-700">
-                    Data 
-                    @if($activeCategory != 0)
-                        buku dengan kategori {{$categories->find($activeCategory)['category_name']}}
-                    @else 
-                        semua buka
-                    @endif
-                    tidak ditemukan
-                </h2>
-
-                @if(trim($searchKey, ' ') != '')
-                    <p class="text-sm text-gray-500 mt-1">
-                        Tidak ada hasil untuk
-                        <span class="font-medium text-gray-700">
-                            "{{$this->searchKey}}"
-                        </span>
+                    <h2 class="text-base font-semibold text-gray-700">
+                        Data buku tidak ditemukan
+                    </h2>
+                    
+                    <p class="text-sm text-gray-500">
+                        @if($searchKey)
+                            Tidak ada hasil untuk
+                            <span class="font-medium text-gray-700">"{{ $searchKey }}"</span>
+                        @endif
+                        @if($activeCategory)
+                            di categori
+                            <span class="font-medium text-gray-700">
+                                {{ $categories->firstWhere('id', $activeCategory)['collection_name'] ?? 'tidak diketahui' }}
+                            </span>
+                        @else
+                            di semua koleksi
+                        @endif
                     </p>
-                @endif
+                </div>
             </div>
             @endforelse
         </div>

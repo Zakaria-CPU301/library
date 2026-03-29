@@ -21,7 +21,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('role:admin')->group(function () {});
 
     Route::prefix('books')->name('books.')->group(function () {
-        Route::livewire('/', 'pages::admin.books')->name('index');
+        Route::livewire('/', 'pages::users.books')->name('index');
+        Route::livewire('view-book{idBook}', 'pages::users.books.view-more')->name('view-more');
         Route::livewire('create', 'pages::admin.books.create')->name('create');
     });
 

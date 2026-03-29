@@ -95,31 +95,30 @@ new class extends Component
                             <td class="border px-4 py-3">{{ $user->email }}</td>
                             <td class="border px-4 py-3 capitalize text-center">{{ $user->role }}</td>
                             <td class="border px-4 py-3 capitalize">{{ $user->collection->collection_name }}</td>
-                            <td class="border px-1 py-1 text-center"><a href="" class="inline-flex bg-yellow-500 px-4 py-2 text-white rounded-md">{{ __('Lihat') }}</a></td>
+                            <td class="border px-1 py-1 text-center"><a href="" class="inline-flex bg-yellow-500 px-4 py-2 text-white rounded-md"><i class="bi bi-eye"></i></a></td>
                             <td class="border px-1 py-1 text-center"><button wire:confirm="Are you sure want to {{collect($statusEnum)->diff($user->status)->first()}} this account?" wire:click="suspendedAccount({{$user->id}})" class="inline-flex bg-gray-800 px-4 py-2 text-white rounded-md">
                                 @if ($user->status === 'active')
-                                    {{ __('Blokir') }}
+                                    <i class="bi bi-ban"></i>
                                 @else
-                                    {{ __('Buka Blokir') }}
+                                    <i class="bi bi-unlock"></i>
                                 @endif
                             </button></td>
                             <td class="border px-1 py-1 text-center">
-                                    <button wire:click="destroyUser({{$user->id}})" wire:confirm="apakah kamu yakin ingin menghapus user ini?" class="inline-flex bg-red-500 px-4 py-2 text-white rounded-md hover:cursor-pointer">{{ __('Hapus') }}</button>
+                                    <button wire:click="destroyUser({{$user->id}})" wire:confirm="apakah kamu yakin ingin menghapus user ini?" class="inline-flex bg-red-500 px-4 py-2 text-white rounded-md hover:cursor-pointer"><i class="bi bi-trash"></i></button>
                             </td>
                         </tr>
                         @empty
                             <tr>
                                 <td colspan="9" class="px-4 py-10 text-center">
                                     <div class="flex flex-col items-center justify-center gap-3">
-                                        {{-- Icon --}}
                                         <div class="text-4xl text-gray-400">
                                             👨‍👩‍👧‍👦
                                         </div>
-                                        {{-- Title --}}
+
                                         <h2 class="text-base font-semibold text-gray-700">
                                             Data pengguna tidak ditemukan
                                         </h2>
-                                        {{-- Description --}}
+                                        
                                         <p class="text-sm text-gray-500">
                                             @if($searchKey)
                                                 Tidak ada hasil untuk
