@@ -11,7 +11,7 @@
     };
 ?>
 
-<div wire:ignore>
+<div wire:ignore class="w-full">
     <select wire:model.live="value" id="{{$id}}" class="w-full">
         <option value="">{{$placeholder}}</option>
         {{$slot}}

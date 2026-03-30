@@ -35,7 +35,7 @@
     <div class="h-screen w-full bg-gray-100 overflow-hidden">
         <div 
             class="flex flex-col h-full" 
-            x-data="{open: JSON.parse(localStorage.getItem('sidebar-toggle') ?? 'true')}"
+            x-data="{open: true}"
         >
 
             <div class="shrink-0">
@@ -44,13 +44,19 @@
 
             <div class="flex flex-1 min-h-0">
                 <aside class="shrink-0 bg-white">
-                    <div class="h-full overflow-y-auto">
+                    <div class="h-full overflow-y-scroll">
                         @include('layouts.sidebar')
                     </div>
                 </aside>
 
-                <main class="flex-1 min-w-0 overflow-y-auto px-12">
-                    {{ $slot }}
+                <main class="flex flex-col min-w-0 w-full">
+                    <div class="bg-white shrink-0 py-2.5">
+                        {{$headerFilter}}
+                    </div>
+
+                    <div class="overflow-y-auto px-10">
+                        {{ $slot }}
+                    </div>
                 </main>
 
             </div>

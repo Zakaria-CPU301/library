@@ -7,11 +7,16 @@ use App\Models\Category;
 
 new class extends Component
 {
-    public $activeCategory = 0;
     public $searchKey = '';
     public $categories = [];
     public $perPage = [0 => 4];
-
+    
+    public $activeCategory = 0;
+    #[On('select-filter')]
+    public function selectFilter($param) {
+        $this->activeCategory = $param;
+    }
+    
     public function mount() {
         $this->categories = Category::all();
         foreach ($this->categories as $c) {
@@ -38,29 +43,22 @@ new class extends Component
 ?>
 
 <div>
+    <x-slot name="headerFilter">
+        <div class="flex px-2">
+            <livewire:selection-filter :dataFilters="$categories" id="categoryIndex" />
+            <livewire:selection-filter :dataFilters="$categories" id="categoryIndex1" />
+            <livewire:selection-filter :dataFilters="$categories" id="categoryIndex2" />
+            <livewire:selection-filter :dataFilters="$categories" id="categoryIndex3" />
+        </div>
+    </x-slot>
+
     <x-header class="border-b">
         <x-header-info title="manajemen buku" desc="Kelola seluruh data buku perpustakaan" />
 
-        <a href="{{route('books.create')}}" wire:navigate class="px-4 py-3 flex items-center rounded-lg text-white bg-green-500">
-            <i class="bi bi-plus"></i>
-            <span>Tambah Buku</span>
-        </a>
+        <x-add-navigate i="bi bi-plus" label="tambah buku"/>
     </x-header>
 
-    <div wire:ignore class="flex justify-between items-center sticky top-5 duration-500 py-6 rounded-lg" id="filtering-partner">
-        <div class="max-w-2xl w-full">
-            <livewire:search-input />
-        </div>
-        <div class="w-2/6">
-            <livewire:tom-select-selection placeholder="pilih kategori" id="categoryIndex" wire:model.live="activeCategory">
-                @foreach (App\Models\Category::all() as $c)
-                <option value="{{$c->id}}">{{$c->category_name}}</option>
-                @endforeach
-            </livewire:tom-select-selection>
-        </div>
-    </div>
-
-    <div class="overflow-x-auto px-5">
+    <div class="overflow-x-auto mt-5">
         <table class="w-full border border-gray-200 border-collapse text-sm">
             <thead class="bg-gray-100 text-gray-700">
                 <tr>

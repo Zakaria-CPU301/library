@@ -11,8 +11,14 @@ new class extends Component
     public $book;
     public $categories = [];
     public $perPage = [0 => 8];
+    
     public $activeCategory = 0;
-
+    #[On('slide-filter')]
+    public function slideFilter($param) 
+    {
+        $this->activeCategory = $param;
+    }
+    
     public function mount()
     {
         $this->categories = Category::all();
@@ -53,23 +59,19 @@ new class extends Component
     }
 };
 ?>
-<div class="px-10">
-    <x-header>
-        <div class="flex justify-center w-full">
-            <livewire:search-input />
-        </div>
-    </x-header>
-
-    <livewire:nav-slide-filter :toggleButton="$categories" wire:model.live="activeCategory" />
+<div class="mt-5">
+    <x-slot name="headerFilter">
+        <livewire:slide-filter :toggleButton="$categories" />
+    </x-slot>
+    {{-- <x-header>
+    </x-header> --}}
 
     <x-session-success />
-    <div class="flex flex-col items-center mt-5 px-6">
+    <div class="flex flex-col items-center">
 
         {{-- GRID --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
-
             @forelse ($books as $book)
-
             <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col transition hover:shadow-md">
 
                 {{-- Image --}}

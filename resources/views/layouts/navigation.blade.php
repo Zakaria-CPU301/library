@@ -17,6 +17,10 @@
             </div>
         </div>
 
+        <div class="max-w-2xl w-full flex">
+            <livewire:search-input />
+        </div>
+        
         <!-- Settings Dropdown -->
         <div class="hidden sm:flex sm:items-center sm:ms-6">
             <button id="dropdownNotificationButton" data-dropdown-toggle="dropdownNotification" class="relative inline-flex items-center text-sm font-medium text-center text-body hover:text-heading focus:outline-none" type="button">

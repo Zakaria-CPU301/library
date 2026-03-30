@@ -10,6 +10,11 @@ new class extends Component
 {
     public $collections = [];
     public $activeCollection = 0;
+
+    #[On('slide-filter')]
+    public function navFilter($param) {
+        $this->activeCollection = $param;
+    }
     
     public $perPage = [0 => 15];
 
@@ -58,94 +63,89 @@ new class extends Component
 };
 ?>
 <div>
-    <x-header class="border-b">
+    <x-slot name="headerFilter">
+        <livewire:slide-filter :toggleButton="$collections" />
+    </x-slot>
+    <x-header class="border-b" width="">
         <x-header-info 
             title="Manajemen User" 
             desc="Kelola data user yang terdaftar di dalam sistem" 
         />
 
-        <div class="max-w-lg w-full">
-            <livewire:search-input />
-        </div>
+        <x-add-navigate i="bi bi-person-plus" label="add user(s)" />
     </x-header>
 
-    <div class="flex flex-col px-10">
-        <livewire:nav-slide-filter :toggleButton="$collections" wire:model.live="activeCollection" />
+    <div class="w-full justify-center mt-5">
+        <x-session-success />
+        <table class="table-fixed w-full">
+            <thead>
+                <tr>
+                    <th class="border w-[5%]">No</th>
+                    <th class="border w-[20%]">Name</th>
+                    <th class="border w-[20%]">Username</th>
+                    <th class="border w-[20%]">Email</th>
+                    <th class="border w-[10%]">Role</th>
+                    <th class="border w-[10%]">Collection</th>
+                    <th class="border w-[25%]" colspan="3">Action</th>
+                </tr>
+            </thead>
+            <tbody id="view-data">
+                @forelse($users as $user)
 
-        <div class="flex justify-center">
-            <x-main-section>
-                <x-session-success />
-                <table class="table-fixed w-full">
-                    <thead>
-                        <tr>
-                            <th class="border w-[5%]">No</th>
-                            <th class="border w-[20%]">Name</th>
-                            <th class="border w-[20%]">Username</th>
-                            <th class="border w-[20%]">Email</th>
-                            <th class="border w-[10%]">Role</th>
-                            <th class="border w-[10%]">Collection</th>
-                            <th class="border w-[25%]" colspan="3">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="view-data">
-                        @forelse($users as $user)
+                <tr wire:loading.remove wire:target="filterUser">
+                    <td class="border px-4 py-3 text-center">{{ $loop->iteration }}</td>
+                    <td class="border px-4 py-3 capitalize">{{ Str::words($user->fullname, 2, ' ...') }}</td>
+                    <td class="border px-4 py-3">{{ $user->username }}</td>
+                    <td class="border px-4 py-3">{{ $user->email }}</td>
+                    <td class="border px-4 py-3 capitalize text-center">{{ $user->role }}</td>
+                    <td class="border px-4 py-3 capitalize">{{ $user->collection->collection_name }}</td>
+                    <td class="border px-1 py-1 text-center"><a href="" class="inline-flex bg-yellow-500 px-4 py-2 text-white rounded-md"><i class="bi bi-eye"></i></a></td>
+                    <td class="border px-1 py-1 text-center"><button wire:confirm="Are you sure want to {{collect($statusEnum)->diff($user->status)->first()}} this account?" wire:click="suspendedAccount({{$user->id}})" class="inline-flex bg-gray-800 px-4 py-2 text-white rounded-md">
+                        @if ($user->status === 'active')
+                            <i class="bi bi-ban"></i>
+                        @else
+                            <i class="bi bi-unlock"></i>
+                        @endif
+                    </button></td>
+                    <td class="border px-1 py-1 text-center">
+                            <button wire:click="destroyUser({{$user->id}})" wire:confirm="apakah kamu yakin ingin menghapus user ini?" class="inline-flex bg-red-500 px-4 py-2 text-white rounded-md hover:cursor-pointer"><i class="bi bi-trash"></i></button>
+                    </td>
+                </tr>
+                @empty
+                    <tr>
+                        <td colspan="9" class="px-4 py-10 text-center">
+                            <div class="flex flex-col items-center justify-center gap-3">
+                                <div class="text-4xl text-gray-400">
+                                    👨‍👩‍👧‍👦
+                                </div>
 
-                        <tr wire:loading.remove wire:target="filterUser">
-                            <td class="border px-4 py-3 text-center">{{ $loop->iteration }}</td>
-                            <td class="border px-4 py-3 capitalize">{{ Str::words($user->fullname, 2, ' ...') }}</td>
-                            <td class="border px-4 py-3">{{ $user->username }}</td>
-                            <td class="border px-4 py-3">{{ $user->email }}</td>
-                            <td class="border px-4 py-3 capitalize text-center">{{ $user->role }}</td>
-                            <td class="border px-4 py-3 capitalize">{{ $user->collection->collection_name }}</td>
-                            <td class="border px-1 py-1 text-center"><a href="" class="inline-flex bg-yellow-500 px-4 py-2 text-white rounded-md"><i class="bi bi-eye"></i></a></td>
-                            <td class="border px-1 py-1 text-center"><button wire:confirm="Are you sure want to {{collect($statusEnum)->diff($user->status)->first()}} this account?" wire:click="suspendedAccount({{$user->id}})" class="inline-flex bg-gray-800 px-4 py-2 text-white rounded-md">
-                                @if ($user->status === 'active')
-                                    <i class="bi bi-ban"></i>
-                                @else
-                                    <i class="bi bi-unlock"></i>
-                                @endif
-                            </button></td>
-                            <td class="border px-1 py-1 text-center">
-                                    <button wire:click="destroyUser({{$user->id}})" wire:confirm="apakah kamu yakin ingin menghapus user ini?" class="inline-flex bg-red-500 px-4 py-2 text-white rounded-md hover:cursor-pointer"><i class="bi bi-trash"></i></button>
-                            </td>
-                        </tr>
-                        @empty
-                            <tr>
-                                <td colspan="9" class="px-4 py-10 text-center">
-                                    <div class="flex flex-col items-center justify-center gap-3">
-                                        <div class="text-4xl text-gray-400">
-                                            👨‍👩‍👧‍👦
-                                        </div>
+                                <h2 class="text-base font-semibold text-gray-700">
+                                    Data pengguna tidak ditemukan
+                                </h2>
+                                
+                                <p class="text-sm text-gray-500">
+                                    @if($searchKey)
+                                        Tidak ada hasil untuk
+                                        <span class="font-medium text-gray-700">"{{ $searchKey }}"</span>
+                                    @endif
+                                    @if($activeCollection)
+                                        di koleksi
+                                        <span class="font-medium text-gray-700">
+                                            {{ $collections->firstWhere('id', $activeCollection)['collection_name'] ?? 'tidak diketahui' }}
+                                        </span>
+                                    @else
+                                        di semua koleksi
+                                    @endif
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody> 
+        </table>
 
-                                        <h2 class="text-base font-semibold text-gray-700">
-                                            Data pengguna tidak ditemukan
-                                        </h2>
-                                        
-                                        <p class="text-sm text-gray-500">
-                                            @if($searchKey)
-                                                Tidak ada hasil untuk
-                                                <span class="font-medium text-gray-700">"{{ $searchKey }}"</span>
-                                            @endif
-                                            @if($activeCollection)
-                                                di koleksi
-                                                <span class="font-medium text-gray-700">
-                                                    {{ $collections->firstWhere('id', $activeCollection)['collection_name'] ?? 'tidak diketahui' }}
-                                                </span>
-                                            @else
-                                                di semua koleksi
-                                            @endif
-                                        </p>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody> 
-                </table>
+        <x-loading-indicator target="activeCollection" />
 
-                <x-loading-indicator target="activeCollection" />
-
-                <x-has-more-page target="activeCollection" :datas="$users" />
-            </x-main-section>
-        </div>
+        <x-has-more-page target="activeCollection" :datas="$users" />
     </div>
 </div>

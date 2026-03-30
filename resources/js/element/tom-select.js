@@ -5,6 +5,9 @@ let sel = {
     lang: false,
     categoryForm: true,
     categoryIndex: false,
+    categoryIndex1: false,
+    categoryIndex2: false,
+    categoryIndex3: false,
 };
 for (const key in sel) {
     const elSelection = document.getElementById(key);
