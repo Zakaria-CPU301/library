@@ -33,7 +33,6 @@ new #[Layout('layouts.form')] class extends Component
     }
 
     // ----------------------------- validation ---------------------------
-    #[Validate('required')]
     public $fileRealPath;
     #[On('file-upload')]
     public function import($path) {
@@ -57,9 +56,11 @@ new #[Layout('layouts.form')] class extends Component
     }
 
     // ---------------------- re-render for live get error in validataion -------------------------
-    public function updatedFileRealPath()
+    public function importRules()
     {
-        $this->validateOnly('fileRealPath');
+        return [
+            'fileRealPath' => 'required',
+        ];
     }
 
     public function updated($property)
@@ -94,7 +95,7 @@ new #[Layout('layouts.form')] class extends Component
     public function user()
     {
         if ($this->mode === 'import') {
-            Excel::import(new UsersImport($this->newCollection(), $this->role), $this->fileRealPath);
+            Excel::import(new UsersImport($this->newCollection(), $this->role), $this->fileRealPath, 'public');
 
             session()->flash('success', 'User imported successfully');
         } else if ($this->mode === 'single') {
@@ -122,7 +123,7 @@ new #[Layout('layouts.form')] class extends Component
         if ($this->mode === 'single') {
             $validate = array_merge($this->getRules(), $this->singleRules());
         } else {
-            $validate = $this->getRules();
+            $validate = array_merge($this->getRules(), $this->importRules());
         }
         $this->validate($validate);
 
@@ -144,6 +145,13 @@ new #[Layout('layouts.form')] class extends Component
         </div>
     </x-header>
 
+    @if ($errors->any())
+        @foreach ($errors->all() as $err)
+        <ul>
+            <li>{{$err}}</li>
+        </ul>
+        @endforeach
+    @endif
     <x-main-form>
         <form wire:submit="save" class="w-full">
             @csrf
@@ -197,7 +205,7 @@ new #[Layout('layouts.form')] class extends Component
             @elseif ($mode === 'import')
                 <div class="mt-4">
                     <x-indicator-information-ping>Diperlukan heading kolom: username, fullname, email, password pada file excel</x-indicator-information-ping>
-                    <livewire:file-input wire:model="import" label="import file" acceptExtention=".xlsx,.xls,.csv"/>
+                    <livewire:file-input wire:model.live="import" label="import file" acceptExtention=".xlsx,.xls,.csv"/>
                     <x-input-error :messages="$errors->get('fileRealPath')" />
                 </div>
             @endif

@@ -55,7 +55,7 @@ new class extends Component
     <x-header class="border-b">
         <x-header-info title="manajemen buku" desc="Kelola seluruh data buku perpustakaan" />
 
-        <x-add-navigate i="bi bi-plus" label="tambah buku"/>
+        <x-add-navigate i="bi bi-plus" label="tambah buku" :href="route('books.create')"/>
     </x-header>
 
     <div class="overflow-x-auto mt-5">

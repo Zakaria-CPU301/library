@@ -16,12 +16,12 @@ new class extends Component
         $this->activeCollection = $param;
     }
     
-    public $perPage = [0 => 15];
+    public $perPage = [0 => 10];
 
     public function mount() {
         $this->collections = Collection::all();
         foreach ($this->collections as $c){
-            $this->perPage[$c->id] = 1;
+            $this->perPage[$c->id] = 10;
         }
         $this->perPage[$this->activeCollection] += 10;
         }
@@ -66,13 +66,13 @@ new class extends Component
     <x-slot name="headerFilter">
         <livewire:slide-filter :toggleButton="$collections" />
     </x-slot>
-    <x-header class="border-b" width="">
+    <x-header class="border-b">
         <x-header-info 
             title="Manajemen User" 
             desc="Kelola data user yang terdaftar di dalam sistem" 
         />
 
-        <x-add-navigate i="bi bi-person-plus" label="add user(s)" />
+        <x-add-navigate i="bi bi-person-plus" label="add user(s)" :href="route('users.create.single')" />
     </x-header>
 
     <div class="w-full justify-center mt-5">

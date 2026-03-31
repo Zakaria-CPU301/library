@@ -35,9 +35,8 @@
     <div class="h-screen w-full bg-gray-100 overflow-hidden">
         <div 
             class="flex flex-col h-full" 
-            x-data="{open: true}"
+            x-data="{open: JSON.parse(localStorage.getItem('sidebar-open') ?? 'true')}"
         >
-
             <div class="shrink-0">
                 @include('layouts.navigation')
             </div>
@@ -50,9 +49,11 @@
                 </aside>
 
                 <main class="flex flex-col min-w-0 w-full">
+                    @isset ($headerFilter)
                     <div class="bg-white shrink-0 py-2.5">
                         {{$headerFilter}}
                     </div>
+                    @endisset
 
                     <div class="overflow-y-auto px-10">
                         {{ $slot }}

@@ -6,7 +6,6 @@ document.addEventListener("livewire:navigated", () => {
     inputDate.forEach((e) => {
         e.addEventListener("click", () => e.showPicker());
     });
-    console.log('ok');
 });
 
 

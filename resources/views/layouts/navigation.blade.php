@@ -4,7 +4,7 @@
         <div class="flex">
             <!-- Humburger Menu -->
             <div class="h-16 flex justify-between items-center">
-                <button @click="open=! open; localStorage.setItem('sidebar-toggle', open)">
+                <button @click="open=! open; localStorage.setItem('sidebar-open', open)">
                     <i class="bi bi-list text-3xl hover:cursor-w-resize"></i>
                 </button>
             </div>
