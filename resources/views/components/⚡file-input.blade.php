@@ -1,7 +1,6 @@
 <?php
 
 use Livewire\Component;
-use Livewire\Attributes\Modelable;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Validate;
 

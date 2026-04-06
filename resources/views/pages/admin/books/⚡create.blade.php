@@ -17,6 +17,7 @@ new #[Layout('layouts.form')] class extends Component
         $this->dispatch('currently-page', current: request()->segment(1));
     }
 
+    #[Validate('required')]
     public $fileRealPath;
     #[On('file-upload')]
     public function cover($path) {
@@ -47,8 +48,8 @@ new #[Layout('layouts.form')] class extends Component
     }
 
     public function Book() {
-        $category = is_numeric($this->category_id) 
-        ? Category::findOrFail($this->category_id) 
+        $category = is_numeric($this->category_id)
+        ? Category::findOrFail($this->category_id)
         : Category::firstOrCreate(['category_name' => $this->category_id]);
         $this->category_id = $category->id;
         Book::create([...$this->validate(), 'cover_path' => $this->fileRealPath]);

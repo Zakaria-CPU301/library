@@ -20,42 +20,38 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
-        *::-webkit-scrollbar {
+        /* *::-webkit-scrollbar {
             display: none;
         }
 
         * {
             scrollbar-width: none;
-        }
+        } */
     </style>
     @livewireStyles
 </head>
 
 <body class="font-sans antialiased">
-    <div class="h-screen w-full bg-gray-100 overflow-hidden">
+    <div class="min-h-screen w-full bg-gray-100">
         <div 
-            class="flex flex-col h-full" 
+            class="flex flex-col min-h-screen" 
             x-data="{open: JSON.parse(localStorage.getItem('sidebar-open') ?? 'true')}"
         >
-            <div class="shrink-0">
-                @include('layouts.navigation')
-            </div>
+            @include('layouts.navigation')
 
-            <div class="flex flex-1 min-h-0">
-                <aside class="shrink-0 bg-white">
-                    <div class="h-full overflow-y-scroll">
-                        @include('layouts.sidebar')
-                    </div>
-                </aside>
+            <div class="flex">
+                <div class="bg-white min-h-screen" :class="open ? 'w-80' : 'w-20'">
+                    @include('layouts.sidebar')
+                </div>
 
                 <main class="flex flex-col min-w-0 w-full">
                     @isset ($headerFilter)
-                    <div class="bg-white shrink-0 py-2.5">
+                    <div class="bg-white py-2.5 sticky top-16.25">
                         {{$headerFilter}}
                     </div>
                     @endisset
 
-                    <div class="overflow-y-auto px-10">
+                    <div class="px-10">
                         {{ $slot }}
                     </div>
                 </main>

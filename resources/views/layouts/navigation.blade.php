@@ -1,10 +1,10 @@
-<nav class="bg-white border-b border-gray-100" id="main-navigation">
+<nav class="bg-white border-b border-gray-100 sticky top-0" id="main-navigation">
     <!-- Primary Navigation Menu -->
     <div class="w-full px-6 flex justify-between h-16">
         <div class="flex">
             <!-- Humburger Menu -->
             <div class="h-16 flex justify-between items-center">
-                <button @click="open=! open; localStorage.setItem('sidebar-open', open)">
+                <button @click="open=! open; localStorage.setItem('sidebar-open', open)" class="cursor-pointer">
                     <i class="bi bi-list text-3xl hover:cursor-w-resize"></i>
                 </button>
             </div>
