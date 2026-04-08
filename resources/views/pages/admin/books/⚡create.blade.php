@@ -1,12 +1,12 @@
 <?php
 use Livewire\Component;
-use Livewire\Attributes\Layout;
+;
 use App\Models\Category;
 use App\Models\Book;
 use Livewire\Attributes\Validate;
 use Livewire\Attributes\On;
 
-new #[Layout('layouts.form')] class extends Component
+new class extends Component
 {
     public $categories = [];
     public $currentYear = 0;

@@ -44,11 +44,8 @@ new class extends Component
 
 <div>
     <x-slot name="headerFilter">
-        <div class="flex px-2">
+        <div class="flex px-2 max-w-sm">
             <livewire:selection-filter :dataFilters="$categories" id="categoryIndex" />
-            <livewire:selection-filter :dataFilters="$categories" id="categoryIndex1" />
-            <livewire:selection-filter :dataFilters="$categories" id="categoryIndex2" />
-            <livewire:selection-filter :dataFilters="$categories" id="categoryIndex3" />
         </div>
     </x-slot>
 

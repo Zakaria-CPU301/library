@@ -12,9 +12,13 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    <!-- Tom Select -->
+    {{-- Tom Select  --}}
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.5.2/dist/css/tom-select.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.5.2/dist/js/tom-select.complete.min.js"></script>
+    
+    {{-- flatpickr --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -32,30 +36,36 @@
 </head>
 
 <body class="font-sans antialiased">
+    @php
+        $currentUser = Auth::user();
+    @endphp
     <div class="min-h-screen w-full bg-gray-100">
         <div 
             class="flex flex-col min-h-screen" 
             x-data="{open: JSON.parse(localStorage.getItem('sidebar-open') ?? 'true')}"
         >
-            @include('layouts.navigation')
+            @if ($currentUser)
+                @include('layouts.navigation')
+            @endif
 
             <div class="flex">
-                <div class="bg-white min-h-screen" :class="open ? 'w-80' : 'w-20'">
-                    @include('layouts.sidebar')
-                </div>
+                @if ($currentUser)
+                    <div class="bg-white fixed top-16.25 h-scee w-auto">
+                        @include('layouts.sidebar')
+                    </div>
+                @endif
 
                 <main class="flex flex-col min-w-0 w-full">
                     @isset ($headerFilter)
-                    <div class="bg-white py-2.5 sticky top-16.25">
-                        {{$headerFilter}}
-                    </div>
+                        <div class="bg-white py-2.5 sticky top-16.25">
+                            {{$headerFilter}}
+                        </div>
                     @endisset
 
-                    <div class="px-10">
+                    <div class="px-10 {{$currentUser ? '' : 'flex h-screen'}}">
                         {{ $slot }}
                     </div>
                 </main>
-
             </div>
         </div>
 

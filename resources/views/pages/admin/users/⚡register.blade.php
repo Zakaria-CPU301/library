@@ -1,7 +1,7 @@
 <?php
 
 use Livewire\Component;
-use Livewire\Attributes\Layout;
+;
 use App\Models\Collection;
 use Livewire\Attributes\Validate;
 use Livewire\WithFileUploads;
@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\UsersImport;
 use App\Models\User;
 
-new #[Layout('layouts.form')] class extends Component
+new class extends Component
 {
     // -------------------------- first render page -----------------------
     public $mode;

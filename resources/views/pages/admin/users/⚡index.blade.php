@@ -73,7 +73,7 @@ new class extends Component
     }
 
     public function showData($userId) {
-        $this->idDataShow = $userId;
+         $this->idDataShow = $userId;
     }
 };
 ?>
@@ -166,7 +166,7 @@ new class extends Component
             class="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
 
             <!-- Backdrop click -->
-            <div class="absolute inset-0" @click="showDetail= false"></div>
+            <div class="absolute inset-0" wire:click="showData('hidden')" @click="showDetail= false"></div>
 
             <!-- Content -->
             <div
@@ -175,7 +175,7 @@ new class extends Component
                 <!-- Header -->
                 <div class="flex justify-between items-center">
                     <h2 class="text-xl font-semibold">Detail Informasi</h2>
-                    <button @click="showDetail = false" class="text-gray-500 hover:text-black cursor-pointer">
+                    <button wire:click="showData('hidden')" @click="showDetail = false" class="text-gray-500 hover:text-black cursor-pointer">
                         ✕
                     </button>
                 </div>
@@ -191,6 +191,10 @@ new class extends Component
                     <li>👨‍👩‍👧‍👦 Collection: <span class="font-medium text-green-600">{{$dataShow->collection->collection_name}}</span></li>
                     @endisset
                 </ul>
+                
+                <div class="flex w-full justify-center">
+                    <x-loading-state-session class="w-8 h-8" class="w-8 h-8" wire:loading wire:target="showData" />
+                </div>
             </div>
         </div>
 

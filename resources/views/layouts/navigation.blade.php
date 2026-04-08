@@ -17,9 +17,11 @@
             </div>
         </div>
 
-        <div class="max-w-2xl w-full flex">
-            <livewire:search-input />
-        </div>
+        @if (!request()->routeIs('borrowing.user'))
+            <div class="max-w-2xl w-full flex">
+                <livewire:search-input />
+            </div>
+        @endif
         
         <!-- Settings Dropdown -->
         <div class="hidden sm:flex sm:items-center sm:ms-6">

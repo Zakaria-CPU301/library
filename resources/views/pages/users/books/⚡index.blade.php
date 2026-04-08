@@ -10,6 +10,7 @@ new class extends Component
 {
     public $book;
     public $categories = [];
+    public $status = [];
     public $perPage = [0 => 8];
     
     public $activeCategory = 0;
@@ -55,7 +56,7 @@ new class extends Component
     }
 
     public function viewMore($idBook) {
-        $this->redirectRoute('books.view-more', ['idBook' => $idBook], true, true);
+        $this->redirectRoute('books.view', $idBook, true, true);
     }
 };
 ?>
@@ -116,7 +117,7 @@ new class extends Component
                         Data buku tidak ditemukan
                     </h2>
                     
-                    <p class="text-sm text-gray-500">
+                    <p class="text-sm text-gray-500">s
                         @if($searchKey)
                             Tidak ada hasil untuk
                             <span class="font-medium text-gray-700">"{{ $searchKey }}"</span>
