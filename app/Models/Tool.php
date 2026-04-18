@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Book extends Model
+class Tool extends Model
 {
     protected $guarded = [
         'id',
@@ -12,10 +12,19 @@ class Book extends Model
         'updated_at'
     ];
 
-    protected $table = 'books';
+    protected $table = 'tools';
 
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function toolmarks()
+    {
+        return $this->hasMany(Mark::class);
+    }
+
+    public function borrows() {
+        return $this->hasMany(Borrow::class);
     }
 }

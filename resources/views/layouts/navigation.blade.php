@@ -1,6 +1,6 @@
 <nav class="bg-white border-b border-gray-100 sticky top-0" id="main-navigation">
     <!-- Primary Navigation Menu -->
-    <div class="w-full px-6 flex justify-between h-16">
+    <div class="w-full px-6 flex justify-between items-center h-16">
         <div class="flex">
             <!-- Humburger Menu -->
             <div class="h-16 flex justify-between items-center">
@@ -12,19 +12,34 @@
             <div class="flex items-center ms-8">
                 <a href="{{ route('index') }}" class="flex items-center space-x-1.5" wire:navigate>
                     <x-application-logo class="block h-8 w-auto fill-current text-gray-800" />
-                    <h1 class="text-xl text-slate-800">Modern Library</h1>
+                    <h1 class=" text-slate-800">Modern Library</h1>
                 </a>
             </div>
         </div>
 
-        @if (!request()->routeIs('borrowing.user'))
+        @isset ($searchEngine)
             <div class="max-w-2xl w-full flex">
                 <livewire:search-input />
             </div>
-        @endif
-        
+        @endisset
+
         <!-- Settings Dropdown -->
-        <div class="hidden sm:flex sm:items-center sm:ms-6">
+        <div class="flex sm:items-center sm:ms-6">
+            <div class="relative flex gap-5 me-2.5">
+                <a
+                    href="{{route(Auth::user()->role === 'user' ? 'borrowing.user.request' : 'borrowing.admin.index')}}" wire:navigate
+                    class="relative z-50 text-black px-4 py-2 rounded-lg shadow hover:shadow-xl transtion duration-200">
+                    <i class="bi bi-cart-fill"></i>
+                </a>
+                @if (Auth::user()->role === 'user')
+                    <button 
+                        @click=" $dispatch('open-mark') "
+                        class="relative z-50 text-blue-800 px-4 py-2 rounded-lg cursor-pointer shadow hover:shadow-xl transition duration-200">
+                        <i class="bi bi-bookmark-fill"></i>
+                    </button>
+                @endif
+            </div>
+
             <button id="dropdownNotificationButton" data-dropdown-toggle="dropdownNotification" class="relative inline-flex items-center text-sm font-medium text-center text-body hover:text-heading focus:outline-none" type="button">
                 <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5.365V3m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175 0 .593 0 1.292-.538 1.292H5.538C5 18 5 17.301 5 16.708c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 12 5.365ZM8.733 18c.094.852.306 1.54.944 2.112a3.48 3.48 0 0 0 4.646 0c.638-.572 1.236-1.26 1.33-2.112h-6.92Z"/></svg>
                 </svg>
@@ -61,6 +76,7 @@
                 </x-slot>
             </x-dropdown>
         </div>
+        
 
         <!-- Hamburger -->
         <div class="-me-2 flex items-center sm:hidden">
@@ -76,7 +92,7 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('index')" :active="request()->routeIs('books.index')">
+            <x-responsive-nav-link :href="route('index')" :active="request()->routeIs('tools.index')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
         </div>
@@ -105,5 +121,6 @@
                 </form>
             </div>
         </div>
+        
     </div>
 </nav>

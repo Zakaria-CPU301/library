@@ -2,62 +2,41 @@
         <!-- drawer component -->
         <ul class="space-y-2 font-medium">
             <li>
-                <x-nav-link :href="route('dashboard.index')" :active="request()->routeIs('dashboard.index')">
+                <x-nav-link :href="route('index')">
                     <i class="bi bi-house text-3xl"></i>
+                    <span x-show="open" class="ms-3">Home</span>
+                </x-nav-link>
+            </li>
+            <li>
+                <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <i class="bi bi-clipboard-data text-3xl"></i>
                     <span x-show="open" class="ms-3">Dashboard</span>
                 </x-nav-link>
             </li>
             @if ($currentUser->role === 'admin')
                 <li>
-                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                    <x-nav-link :href="route('account.index')" :active="request()->routeIs('account.*')">
                         <i class="bi bi-people text-3xl"></i>
-                        <span x-show="open" class="flex-1 ms-3 whitespace-nowrap">Managemen Pengguna</span>
+                        <span x-show="open" class="flex-1 ms-3 whitespace-nowrap">Managemen User</span>
                     </x-nav-link>
                 </li>
             @endif
-            <li x-data="{dropdown: JSON.parse(localStorage.getItem('dropdown-navbar') ?? 'false')}">
-                <template x-if="! open">
-                    <x-nav-link :href="route('books.' . Auth::user()->role)" :active="request()->routeIs('books.*')">
-                        <i class="bi bi-book text-3xl"></i>
-                    </x-nav-link>
-                </template>
-                <button x-show="open" @click="dropdown= ! dropdown; localStorage.setItem('dropdown-navbar', dropdown)" type="button" class="flex px-3 text-sm items-center w-full justify-between hover:cursor-pointer text-gray-500 hover:bg-gray-100 hover:text-gray-700 relative gap-3 py-2 rounded-lg text-md text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
-                    <template x-if="open">
-                        <i class="bi bi-book text-3xl"></i>
-                    </template>
-                    <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">
-                        @if ($currentUser->role === 'admin')
-                            Managemen Buku
-                        @endif
-                        Buku
-                    </span>
-                    <svg :class="dropdown ? 'rotate-180' : ''" class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7" />
-                    </svg>
-                </button>
-                <div x-show="open">
-                    <ul x-show="dropdown" class="py-2 space-y-2 ms-8">
-                        <li>
-                            <x-nav-link :href="route('books.' . $currentUser->role)" :active="request()->routeIs('books.' . $currentUser->role)">
-                                <span x-show="open" class="ms-3">
-                                    @if ($currentUser->role === 'admin')
-                                        Dafter Buku
-                                    @elseif ($currentUser->role ===  'user')
-                                        Buku Populer
-                                    @endif
-                                </span>
-                            </x-nav-link>
-                        </li>
-                        {{-- <li>
-                            <x-nav-link :href="route('books.view-more', '1')" :active="request()->routeIs('books.view-more')">
-                                <span x-show="open" class="ms-3">Pengembalian & Denda</span>
-                            </x-nav-link>
-                        </li> --}}
-                    </ul>
-                </div>
-            </li>
             <li>
-                <x-nav-link :href="route('borrowing.' . $currentUser->role)" :active="request()->routeIs('borrowing.*')">
+                <x-nav-link :href="route('tools.' . $currentUser->role)" :active="request()->routeIs('tools.*')">
+                    <i class="bi bi-tools text-3xl"></i>
+                    <span x-show="open" class="flex-1 ms-3 whitespace-nowrap">{{$currentUser->role === 'admin' ? 'Kelola' : ''}} barang</span>
+                </x-nav-link>
+            </li>
+            @if ($currentUser->role === 'user')
+            <li>
+                <x-nav-link :href="route('borrowing.user.request')" :active="request()->routeIs('borrowing.user.request')">
+                    <i class="bi bi-basket text-3xl"></i>
+                    <span x-show="open" class="flex-1 ms-3 whitespace-nowrap">Peminjaman barang</span>
+                </x-nav-link>
+            </li>
+            @endif
+            <li>
+                <x-nav-link :href="route('borrowing.' . $currentUser->role . '.index')" :active="request()->routeIs('borrowing.' . $currentUser->role . '.index')">
                     <i class="bi bi-newspaper text-3xl"></i>
                     <span x-show="open" class="flex-1 ms-3 whitespace-nowrap">{{$currentUser->role === 'admin' ? 'Kelola' : 'History'}} Peminjaman</span>
                 </x-nav-link>

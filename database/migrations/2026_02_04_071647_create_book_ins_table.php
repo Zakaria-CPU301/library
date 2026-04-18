@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('book_ins', function (Blueprint $table) {
+        Schema::create('tool_ins', function (Blueprint $table) {
             $table->id();
-            $table->date('date_book_in');
+            $table->date('date_tool_in');
             $table->integer('qty');
-            
-            $table->foreignId('book_id')->constrained()->ondelete('cascade')->onUpdate('cascade');
+
+            $table->foreignId('tool_id')->constrained()->ondelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('book_ins');
+        Schema::dropIfExists('tool_ins');
     }
 };

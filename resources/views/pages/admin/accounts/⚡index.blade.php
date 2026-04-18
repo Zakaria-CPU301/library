@@ -11,6 +11,7 @@ new class extends Component
     public $collections = [];
     public $activeCollection = 0;
     public $idDataShow = 0;
+    public $asd = '';
 
     #[On('slide-filter')]
     public function navFilter($param)
@@ -51,7 +52,7 @@ new class extends Component
         }
         $users = $query->paginate($this->perPage[$this->activeCollection]);
         $showData = User::find($this->idDataShow);
-        return view('pages.admin.users.⚡index', ['users' => $users, 'dataShow' => $showData]);
+        return view('pages.admin.accounts.⚡index', ['users' => $users, 'dataShow' => $showData]);
     }
 
     public $user;
@@ -72,24 +73,23 @@ new class extends Component
         $statusAccount->update(['status' => $statusMissing->first()]);
     }
 
-    public function showData($userId) {
-         $this->idDataShow = $userId;
+    public function showModal($userId) {
+        $this->idDataShow = $userId;
     }
 };
 ?>
 <div>
-    <x-slot name="headerFilter">
-        <livewire:slide-filter :toggleButton="$collections" />
-    </x-slot>
+    <x-slot name="searchEngine"></x-slot>
+    <livewire:slide-filter wire:model.live="activeCollection" :toggleButton="$collections" />
     <x-header class="border-b">
         <x-header-info
             title="Manajemen User"
             desc="Kelola data user yang terdaftar di dalam sistem" />
 
-        <x-add-navigate i="bi bi-person-plus" label="add user(s)" :href="route('users.create.single')" />
+        <x-add-navigate i="bi bi-person-plus" label="add user(s)" :href="route('account.create.single')" />
     </x-header>
 
-    <div class="w-full justify-center mt-5" x-data="{showDetail: false}">
+    <div class="w-full justify-center mt-5" x-data="{openModal: false}">
         <x-session-success />
         <table class="table-fixed w-full">
             <thead>
@@ -106,24 +106,28 @@ new class extends Component
             <tbody id="view-data">
                 @forelse($users as $user)
 
-                <tr wire:loading.remove wire:target="filterUser">
+                <tr wire:loading.remove wire:target="filterUser" wire:loading.class="data-loading:blur-2xl">
                     <td class="border px-4 py-3 text-center">{{ $loop->iteration }}</td>
                     <td class="border px-4 py-3 capitalize">{{ Str::words($user->fullname, 2, ' ...') }}</td>
                     <td class="border px-4 py-3">{{ $user->username }}</td>
                     <td class="border px-4 py-3">{{ $user->email }}</td>
                     <td class="border px-4 py-3 capitalize text-center">{{ $user->role }}</td>
                     <td class="border px-4 py-3 capitalize">{{ $user->collection->collection_name }}</td>
-                    <td class="border px-1 py-1 text-center"><button wire:click="showData({{$user->id}})" @click="showDetail = true" class="inline-flex bg-yellow-500 px-4 py-2 text-white rounded-md cursor-pointer"><i class="bi bi-eye"></i></button></td>
-                    <td class="border px-1 py-1 text-center"><button wire:confirm="Are you sure want to {{collect($statusEnum)->diff($user->status)->first()}} this account?" wire:click="suspendedAccount({{$user->id}})" class="inline-flex bg-gray-800 px-4 py-2 text-white rounded-md cursor-pointer">
-                            @if ($user->status === 'active')
-                            <i class="bi bi-ban"></i>
-                            @else
-                            <i class="bi bi-unlock"></i>
-                            @endif
-                        </button></td>
-                    <td class="border px-1 py-1 text-center">
-                        <button wire:click="destroyUser({{$user->id}})" wire:confirm="apakah kamu yakin ingin menghapus user ini?" class="inline-flex bg-red-500 px-4 py-2 text-white rounded-md cursor-pointer"><i class="bi bi-trash"></i></button>
-                    </td>
+                    <td class="border px-1 py-1 text-center" colspan="{{$user->email != 'superadmin@gmail.com' ? '1' : '3'}}"><button wire:click="showModal({{$user->id}})" @click="openModal = true" class="inline-flex bg-yellow-500 px-4 py-2 text-white rounded-md cursor-pointer"><i class="bi bi-eye"></i></button></td>
+                    @if ($user->email != 'superadmin@gmail.com')
+                        <td class="border px-1 py-1 text-center">
+                            <button wire:confirm="Are you sure want to {{collect($statusEnum)->diff($user->status)->first()}} this account?" wire:click="suspendedAccount({{$user->id}})" class="inline-flex bg-gray-800 px-4 py-2 text-white rounded-md cursor-pointer">
+                                @if ($user->status === 'active')
+                                <i class="bi bi-ban"></i>
+                                @else
+                                <i class="bi bi-unlock"></i>
+                                @endif
+                            </button>
+                        </td>
+                        <td class="border px-1 py-1 text-center">
+                            <button wire:click="destroyUser({{$user->id}})" wire:confirm="apakah kamu yakin ingin menghapus user ini?" class="inline-flex bg-red-500 px-4 py-2 text-white rounded-md cursor-pointer"><i class="bi bi-trash"></i></button>
+                        </td>
+                    @endif
                 </tr>
                 @empty
                 <tr>
@@ -158,29 +162,8 @@ new class extends Component
             </tbody>
         </table>
 
-        <!-- Overlay -->
-        <div
-            x-show="showDetail"
-            x-transition
-            x-cloak
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-
-            <!-- Backdrop click -->
-            <div class="absolute inset-0" wire:click="showData('hidden')" @click="showDetail= false"></div>
-
-            <!-- Content -->
-            <div
-                @click.stop
-                class="relative bg-white w-full max-w-lg mx-4 rounded-2xl shadow-xl p-6 space-y-4">
-                <!-- Header -->
-                <div class="flex justify-between items-center">
-                    <h2 class="text-xl font-semibold">Detail Informasi</h2>
-                    <button wire:click="showData('hidden')" @click="showDetail = false" class="text-gray-500 hover:text-black cursor-pointer">
-                        ✕
-                    </button>
-                </div>
-
-                <!-- Content List -->
+        <x-modal-detail labelModal="detail information">
+            <div class="bg-white p-10 rounded-xl">
                 <ul class="space-y-2 text-gray-600">
                     @isset($dataShow)
                     <li>🥸 Nama Lengkap: <span class="font-medium text-black">{{$dataShow->fullname}}</span></li>
@@ -191,12 +174,8 @@ new class extends Component
                     <li>👨‍👩‍👧‍👦 Collection: <span class="font-medium text-green-600">{{$dataShow->collection->collection_name}}</span></li>
                     @endisset
                 </ul>
-                
-                <div class="flex w-full justify-center">
-                    <x-loading-state-session class="w-8 h-8" class="w-8 h-8" wire:loading wire:target="showData" />
-                </div>
             </div>
-        </div>
+        </x-modal-detail>
 
         <x-loading-indicator target="activeCollection" />
 

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ $title ?? 'Laravel' }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -24,13 +24,13 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
-        /* *::-webkit-scrollbar {
+        *::-webkit-scrollbar {
             display: none;
         }
 
         * {
             scrollbar-width: none;
-        } */
+        }
     </style>
     @livewireStyles
 </head>
@@ -44,28 +44,30 @@
             class="flex flex-col min-h-screen" 
             x-data="{open: JSON.parse(localStorage.getItem('sidebar-open') ?? 'true')}"
         >
-            @if ($currentUser)
+            @isset ($currentUser)
                 @include('layouts.navigation')
-            @endif
+            @endisset
 
             <div class="flex">
                 @if ($currentUser)
-                    <div class="bg-white fixed top-16.25 h-scee w-auto">
-                        @include('layouts.sidebar')
-                    </div>
+                <div class="top-16.25 h-[calc(100vh-65px)] sticky bg-white w-auto">
+                    @include('layouts.sidebar')
+                </div>
                 @endif
-
+                
                 <main class="flex flex-col min-w-0 w-full">
-                    @isset ($headerFilter)
-                        <div class="bg-white py-2.5 sticky top-16.25">
-                            {{$headerFilter}}
-                        </div>
-                    @endisset
-
-                    <div class="px-10 {{$currentUser ? '' : 'flex h-screen'}}">
+                    <div class="{{$currentUser ? '' : 'flex h-screen'}} px-10">
                         {{ $slot }}
                     </div>
                 </main>
+
+                <div x-data="{markOpen: JSON.parse(localStorage.getItem('mark-open') ?? 'false')}"
+                    @open-mark.window="
+                        markOpen = true;
+                        localStorage.setItem('mark-open', markOpen)
+                    ">
+                    <livewire:mark />
+                </div>
             </div>
         </div>
 

@@ -15,7 +15,7 @@ new class extends Component
 
 <div>
     <x-header>
-        <x-header-info title="Kelola Peminjaman" desc="Kelola semua peminjaman buku yang di ajukan pengguna" />
+        <x-header-info title="Kelola Peminjaman" desc="Kelola semua peminjaman barang yang di ajukan pengguna" />
     </x-header>
     <ul role="list" class="divide-y divide-white/5">
         <li class="flex justify-between gap-x-6 py-5">

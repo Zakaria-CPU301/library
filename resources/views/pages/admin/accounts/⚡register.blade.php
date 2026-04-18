@@ -24,12 +24,12 @@ new class extends Component
     public function toImport()
     {
         session(['slut' => 'false']);
-        $this->redirectRoute('users.create.import', navigate: true);
+        $this->redirectroute('account.create.import', navigate: true);
     }
 
     public function toSingle() 
     {
-        $this->redirectRoute('users.create.single',  navigate: true);
+        $this->redirectroute('account.create.single',  navigate: true);
     }
 
     // ----------------------------- validation ---------------------------
@@ -49,8 +49,8 @@ new class extends Component
     {
         return [
             'fullname' => ['required', 'max:255'],
-            'username' => ['required', 'max:50'],
-            'email' => ['required', 'email:dns'],
+            'username' => ['required', 'max:50', 'unique:users,username'],
+            'email' => ['required', 'email:dns', 'unique:users,email'],
             'password' => 'required',
         ];
     }
@@ -129,7 +129,7 @@ new class extends Component
 
         try {
             $this->user();
-            $this->redirectRoute('users.index', navigate: true); //reference
+            $this->redirectroute('account.index', navigate: true); //reference
         } catch (\Exception $e) {
             $this->addError('import', $e->getMessage());
         }
@@ -145,40 +145,29 @@ new class extends Component
         </div>
     </x-header>
 
-    @if ($errors->any())
-        @foreach ($errors->all() as $err)
-        <ul>
-            <li>{{$err}}</li>
-        </ul>
-        @endforeach
-    @endif
     <x-main-form>
         <form wire:submit="save" class="w-full">
             @csrf
 
             @if ($mode === 'single')
-            <!-- Name -->
             <div>
                 <x-input-label for="fullname" :value="__('Fullname')" />
                 <x-text-input id="fullname" class="block w-full" type="text" wire:model.live="fullname" placeholder="{{__('Fullname')}}" />
                 <x-input-error :messages="$errors->get('fullname')" class="mt-2" />
             </div>
 
-            <!-- Username -->
             <div class="mt-4">
                 <x-input-label for="username" :value="__('Username')" />
                 <x-text-input id="username" class="block w-full" type="text" wire:model.live="username" placeholder="{{__('Username')}}" />
                 <x-input-error :messages="$errors->get('username')" class="mt-2" />
             </div>
 
-            <!-- Email Address -->
             <div class="mt-4">
                 <x-input-label for="email" :value="__('Email')" />
                 <x-text-input id="email" class="block w-full" type="email" wire:model.live="email" placeholder="{{__('Email')}}" />
                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
             </div>
 
-            <!-- Password -->
             <div class="mt-4">
                 <x-input-label for="password" :value="__('Password')" />
 
@@ -191,7 +180,6 @@ new class extends Component
                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
 
-            <!-- Confirm Password -->
             {{-- <div class="mt-4">
             <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
 
@@ -207,6 +195,7 @@ new class extends Component
                     <x-indicator-information-ping>Diperlukan heading kolom: username, fullname, email, password pada file excel</x-indicator-information-ping>
                     <livewire:file-input wire:model.live="import" label="import file" acceptExtention=".xlsx,.xls,.csv"/>
                     <x-input-error :messages="$errors->get('fileRealPath')" />
+                    <x-input-error :messages="$errors->get('import')" />
                 </div>
             @endif
 
@@ -223,7 +212,7 @@ new class extends Component
             <div class="mt-4" wire:ignore>
                 <x-input-label for="collection" :value="__('Select Collection')" class="mt-2" />
                 <x-indicator-information-ping>Penambahan koleksi harus memiliki huruf</x-indicator-information-ping>
-                <livewire:tom-select-selection placeholder="Pilih koleksi yang sesuai" wire:model.live='collection_id' id="collection">
+                <livewire:tom-select-selection placeholder="Pilih koleksi yang sesuai" id="collection">
                     @foreach (App\Models\Collection::all() as $collection)
                     <option value="{{$collection->id}}">{{$collection->collection_name}}</option>
                     @endforeach
@@ -232,7 +221,7 @@ new class extends Component
             <x-input-error :messages="$errors->get('collection_id')" />
 
             <div class="flex items-center justify-end mt-4">
-                <x-primary-button wire:confirm="are you sure wkwk" class="ms-4">
+                <x-primary-button class="ms-4">
                     {{ __('Import') }}
                 </x-primary-button>
             </div>

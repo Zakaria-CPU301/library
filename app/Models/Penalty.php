@@ -5,14 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Collection extends Model
+class Penalty extends Model
 {
     use HasFactory;
+    
     protected $fillable = [
-        'collection_name'
+        'penalty_name',
+        'nominal_penalty'
     ];
-
-    function users() {
-        return $this->hasMany(User::class);
-    }
 }

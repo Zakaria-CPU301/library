@@ -1,0 +1,56 @@
+* [33m2632a70[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mbackend[m[33m)[m aasd
+* [33mc32cf8b[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/backend[m[33m, [m[1;32mmain[m[33m)[m feat: enhance layout and functionality of admin dashboard and user management
+* [33me9ed673[m feat: update navigation and filtering components for improved user experience
+* [33mbb8fc30[m CENTER POINT: perubahan signifikan pada modelable injection di filtering toggle button ke dispatch event
+* [33m99640a0[m[33m ([m[1;31morigin/frontend[m[33m, [m[1;32mfrontend[m[33m)[m first(configure): (feat): enhance dynamic all feature
+* [33m9eaf74c[m feat(sidebar): dynamic sidebar with local storage native javascript
+* [33me307a59[m feat: enhance clean nav slide filter
+* [33m0044bb6[m feat: add loading indicator component and integrate it into user and tool index pages
+* [33m74e266f[m feat: add Livewire configuration file and update components for file uploads
+*   [33m837e652[m Merge pull request #3 from Zakaria-CPU301/main
+[32m|[m[33m\[m  
+[32m|[m * [33m173844c[m fix(glitch): animation load more on bottom page
+[32m|[m * [33me56dea7[m fix(updated): manage status users
+[32m|[m[32m/[m  
+* [33me8975e2[m fix(bug): load more behavior logic
+* [33mb209084[m refactor: update form components and layout for improved structure and styling
+* [33meeecba7[m fix(logic): all manage users (importable logic)
+* [33m38c6c4d[m clean controller
+* [33m2b6bd62[m fix: live search for manage users
+*   [33m6486932[m Merge branch 'frontend' of https://github.com/Zakaria-CPU301/library
+[34m|[m[35m\[m  
+[34m|[m *   [33me97e44c[m Merge remote-tracking branch 'origin/frontend' into frontend
+[34m|[m [36m|[m[1;31m\[m  
+[34m|[m * [1;31m\[m   [33m9ad64a1[m Merge branch 'backend' of https://github.com/Zakaria-CPU301/library into frontend
+[34m|[m [1;32m|[m[1;33m\[m [1;31m\[m  
+[34m|[m * [1;33m|[m [1;31m|[m [33mbc97d3d[m Remove unused components and views; refactor tool and user management pages to use Livewire; add new session success component; implement new user registration and tool creation forms with validation.
+* [1;33m|[m [1;33m|[m [1;31m|[m [33m53540f6[m Remove unused components and views; refactor tool and user management pages to use Livewire; add new session success component; implement new user registration and tool creation forms with validation.
+* [1;33m|[m [1;33m|[m [1;31m|[m   [33mbbf0c16[m resolve try main
+[1;34m|[m[1;31m\[m [1;33m\[m [1;33m\[m [1;31m\[m  
+[1;34m|[m [1;31m|[m [1;33m|[m[1;31m_[m[1;33m|[m[1;31m/[m  
+[1;34m|[m [1;31m|[m[1;31m/[m[1;33m|[m [1;33m|[m   
+[1;34m|[m * [1;33m|[m [1;33m|[m   [33m599300b[m try again
+[1;34m|[m [1;36m|[m[31m\[m [1;33m\[m [1;33m\[m  
+[1;34m|[m [1;36m|[m * [1;33m\[m [1;33m\[m   [33m36dbd2c[m Merge pull request #1 from Zakaria-CPU301/frontend
+[1;34m|[m [1;36m|[m [32m|[m[1;33m\[m [1;33m\[m [1;33m\[m  
+[1;34m|[m [1;36m|[m [32m|[m [1;33m|[m [1;33m|[m[1;33m/[m  
+[1;34m|[m [1;36m|[m [32m|[m [1;33m|[m[1;33m/[m[1;33m|[m   
+[1;34m|[m * [32m|[m [1;33m/[m [1;33m|[m [33m615838f[m ref: folder structure
+[1;34m|[m [1;33m|[m [32m|[m[1;33m/[m [1;33m/[m  
+[1;34m|[m [1;33m|[m[1;33m/[m[32m|[m [1;33m|[m   
+* [1;33m|[m [32m|[m [1;33m|[m [33m76fa19d[m resolve try
+[1;33m|[m[1;33m\[m[1;33m|[m [32m|[m [1;33m|[m 
+[1;33m|[m [1;33m|[m[1;33m_[m[32m|[m[1;33m/[m  
+[1;33m|[m[1;33m/[m[1;33m|[m [32m|[m   
+[1;33m|[m * [32m|[m [33m81e7718[m Clean code user registration and tool management components
+[1;33m|[m [32m|[m[32m/[m  
+* [32m/[m [33m7cd7e3b[m try
+[32m|[m[32m/[m  
+* [33m850b092[m feat: enhance user registration with new collection validation and import functionality clean form for action
+* [33meba46d8[m fix(tailwind): padding rules old to new rules
+* [33mc934520[m feat: implement user registration and import functionality with Livewire fix: update navigation links and button styles for better UX refactor: enhance user data loading with pagination and AJAX delete: remove old registration view in favor of Livewire component
+* [33mb5f988f[m fix(navigation): configure navigate async use livewire
+* [33md15d7a1[m fix: configure users and register
+* [33m330e3fb[m CENTER POINT(AJAX): Asynchronous data with button toggle
+* [33mfe985c8[m feat: import data excel and resolve collection for users storage
+* [33m9a77c6f[m first commit

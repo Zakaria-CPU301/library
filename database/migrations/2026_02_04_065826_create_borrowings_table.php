@@ -13,14 +13,13 @@ return new class extends Migration
     {
         Schema::create('borrows', function (Blueprint $table) {
             $table->id();
-            $table->date('borrow_date');
-            $table->date('return_date');
-            $table->integer('keterlambatan')->nullable();
-            $table->enum('status', array('borrow', 'return'));
-            $table->integer('total_fine')->nullable();
+            $table->date('borrow_date')->nullable();
+            $table->date('return_date')->nullable();
+            $table->enum('status', ['draft', 'accept', 'reject', 'return']);
 
-            $table->foreignId('fine_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('penalty_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('tool_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

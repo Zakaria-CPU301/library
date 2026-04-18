@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('books', function (Blueprint $table) {
+        Schema::create('tools', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('author');
+            $table->string('name_tool');
             $table->integer('qty');
             $table->enum('status', ['borrow', 'available'])->default('available');
-            $table->enum('lang', ['indonesian', 'english']);
-            $table->string('year_published');
+            $table->longText('description_tool');
 
             $table->foreignId('category_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('books');
+        Schema::dropIfExists('tools');
     }
 };

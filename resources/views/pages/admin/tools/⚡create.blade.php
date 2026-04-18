@@ -2,7 +2,7 @@
 use Livewire\Component;
 ;
 use App\Models\Category;
-use App\Models\Book;
+use App\Models\Tool;
 use Livewire\Attributes\Validate;
 use Livewire\Attributes\On;
 
@@ -25,107 +25,90 @@ new class extends Component
         $this->validateOnly('fileRealPath');
     }
 
-    public function rules() {
-        return [
-            'year_published' => ['required', 'numeric', 'min:1500', 'max:' . $this->currentYear],
-        ];
-    }
-    
     #[Validate(['required', 'max:255'])]
-    public $title = '';
-    #[Validate(['required', 'max:255'])]
-    public $author = '';
-    public $year_published = 1500;
+    public $name_tool = '';
     #[Validate(['required', 'numeric', 'min:1'])]
     public $qty = '';
-    #[Validate(['required', 'in:indonesian,english'])]
-    public $lang = '';
     #[Validate(['required'])]
     public $category_id = '';
+    #[Validate('required')]
+    public $description_tool = '';
 
-    public function updated($property) {
-        $this->validateOnly($property, array_merge($this->getRules(), $this->rules()));
-    }
-
-    public function Book() {
+    public function tool() {
         $category = is_numeric($this->category_id)
         ? Category::findOrFail($this->category_id)
         : Category::firstOrCreate(['category_name' => $this->category_id]);
         $this->category_id = $category->id;
-        Book::create([...$this->validate(), 'cover_path' => $this->fileRealPath]);
+        Tool::create([...$this->validate(), 'cover_path' => $this->fileRealPath]);
         
-        session()->flash('success', 'Added a book successfully');
-        $this->redirectRoute('books.index');
+        session()->flash('success', 'Added a tool successfully');
+        $this->redirectRoute('tools.admin', navigate: true);
     }
 
     public function save() {
-        $this->validate(array_merge($this->getRules(), $this->rules()));
-        $this->Book();
+        $this->validate();
+        $this->tool();
     }
 };
 ?>
 
 <div>
     <x-header>
-        <x-header-info title="Buku Baru" desc="masukkan data buku baru ke dalam sistem"/>
+        <x-header-info title="barang Baru" desc="masukkan data barang baru ke dalam sistem"/>
     </x-header>
-
     <x-main-form>
         <form wire:submit="save" class="w-full">
             @csrf
             <div class="">
-                <livewire:file-input label="Cover Buku" acceptExtention="image/png, image/jpeg, image/jpg" />
+                <livewire:file-input label="Cover barang" acceptExtention="image/png, image/jpeg, image/jpg" />
                 <x-input-error :messages="$errors->get('fileRealPath')" />
             </div>
             
             <div class="mt-3">
-                <x-input-label for="title">Judul Buku</x-input-label>
-                <x-text-input type="text" wire:model.live="title" id="title" placeholder="Masukkan judul buku"/>
-                <x-input-error :messages="$errors->get('title')" />
+                <x-input-label for="title">Judul barang</x-input-label>
+                <x-text-input type="text" wire:model.live="name_tool" id="title" placeholder="Masukkan judul barang"/>
+                <x-input-error :messages="$errors->get('name_tool')" />
             </div>
-
+{{-- 
             <div class="mt-3">
                 <x-input-label for="author">Nama Penulis</x-input-label>
-                <x-text-input type="text" wire:model.live="author" id="author" placeholder="Masukkan pengarang buku ini"/>
+                <x-text-input type="text" wire:model.live="author" id="author" placeholder="Masukkan pengarang barang ini"/>
                 <x-input-error :messages="$errors->get('author')" />
             </div>
 
             <div class="mt-3">
                 <x-input-label for="year">Tahun Terbit</x-input-label>
-                <x-text-input type="number" wire:model.live="year_published" id="year" placeholder="Masukkan tahun terbit buku ini"/>
+                <x-text-input type="number" wire:model.live="year_published" id="year" placeholder="Masukkan tahun terbit barang ini"/>
                 <x-input-error :messages="$errors->get('year_published')"/>
-            </div>
+            </div> --}}
 
             <div class="mt-3">
-                <x-input-label for="qty">Jumlah Buku</x-input-label>
-                <x-text-input type="number" wire:model.live="qty" id="qty" placeholder="Tetapkan jumlah buku yang tersedia"/>
+                <x-input-label for="qty">Jumlah barang</x-input-label>
+                <x-text-input type="number" wire:model.live="qty" id="qty" placeholder="Tetapkan jumlah barang yang tersedia"/>
                 <x-input-error :messages="$errors->get('qty')"/>
             </div>
 
             <div class="mt-3" wire:ignore>
-                <x-input-label for="lang">Bahasa</x-input-label>
-                <x-indicator-information-ping>Apakah bahasa bisa di tambah?</x-indicator-information-ping>
-                <livewire:tom-select-selection placeholder="Pilih bahasa buku" wire:model.live="lang" id="lang">
-                    <option value="english">Inggris</option>
-                    <option value="indonesian">Indonesia</option>
-                </livewire:tom-select-selection>
-            </div>
-            <x-input-error :messages="$errors->get('lang')"/>
-
-            <div class="mt-3" wire:ignore>
                 <x-input-label for="category">Kategori</x-input-label>
                 <x-indicator-information-ping>Penambahan kategori harus memiliki huruf</x-indicator-information-ping>
-                <livewire:tom-select-selection placeholder="Pilih kategori buku" wire:model.live="category_id" id="categoryForm">
+                <livewire:tom-select-selection placeholder="Pilih kategori barang" wire:model.live="category_id" id="categoryForm">
                     @foreach ($categories as $category)
                         <option value="{{$category->id}}">{{$category->category_name}}</option>
                     @endforeach
                 </livewire:tom-select-selection>
             </div>
             <x-input-error :messages="$errors->get('category_id')"/>
+            <div class="mt-3">
+                <x-input-label value="Deskripsi barang" />
+                <textarea id="message" rows="4" wire:model.live="description_tool" 
+                class="border border-gray-300 text-heading text-sm rounded-base mt-2 focus:border-indigo-500 focus:ring-indigo-500 block w-full px-2 py-2 placeholder:text-sm" 
+                placeholder="Masukkan deskripsi untuk barang ini..."></textarea>
+                <x-input-error :messages="$errors->get('description_tool')" />
+            </div>
 
             <div class="flex justify-end mt-4">
                 <x-primary-button>
-                    {{__('tambah buku')}}
+                    {{__('tambah barang')}}
                 </x-primary-button>
             </div>
         </form>

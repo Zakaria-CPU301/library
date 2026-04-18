@@ -46,7 +46,17 @@ class User extends Authenticatable
         ];
     }
 
-    function collection() {
+    public function collection()
+    {
         return $this->belongsTo(Collection::class);
+    }
+
+    public function toolmarks()
+    {
+        return $this->hasMany(Mark::class);
+    }
+
+    public function borrows() {
+        return $this->hasMany(Borrow::class);
     }
 }

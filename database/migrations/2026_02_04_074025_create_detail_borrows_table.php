@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('qty');
 
             $table->foreignId('borrow_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('book_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('tool_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

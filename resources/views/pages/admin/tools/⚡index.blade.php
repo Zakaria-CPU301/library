@@ -1,7 +1,7 @@
 <?php
 
 use Livewire\Component;
-use App\Models\Book;
+use App\Models\Tool;
 use Livewire\Attributes\On;
 use App\Models\Category;
 
@@ -25,10 +25,10 @@ new class extends Component
     }
     
     public function render() {
-        $query = Book::with('category')->whereAny(['title', 'author'], 'LIKE', "%{$this->searchKey}%");
+        $query = Tool::with('category')->whereAny(['name_tool'], 'LIKE', "%{$this->searchKey}%");
         if($this->activeCategory) $query->where('category_id', $this->activeCategory);
-        $book = $query->paginate($this->perPage[$this->activeCategory]);
-        return view('pages.admin.books.⚡index', ['books' => $book]);
+        $tool = $query->paginate($this->perPage[$this->activeCategory]);
+        return view('pages.admin.tools.⚡index', ['tools' => $tool]);
     }
 
     #[On('search-key')]
@@ -39,20 +39,22 @@ new class extends Component
     public function loadMore() {
         $this->perPage[$this->activeCategory] += 1;
     }
+
+    public function editTool($toolId) {
+        $this->redirectRoute('tools.edit', ['toolId' => $toolId], false, true);
+    }
 };
 ?>
 
 <div>
-    <x-slot name="headerFilter">
-        <div class="flex px-2 max-w-sm">
-            <livewire:selection-filter :dataFilters="$categories" id="categoryIndex" />
-        </div>
-    </x-slot>
+    <x-slot name="searchEngine"></x-slot>
+    <div class="flex px-2 max-w-sm">
+        <livewire:selection-filter :dataFilters="$categories" id="categoryIndex" />
+    </div>
 
     <x-header class="border-b">
-        <x-header-info title="manajemen buku" desc="Kelola seluruh data buku perpustakaan" />
-
-        <x-add-navigate i="bi bi-plus" label="tambah buku" :href="route('books.create')"/>
+        <x-header-info title="manajemen barang" desc="Kelola seluruh data barang perpustakaan" />
+        <x-add-navigate i="bi bi-plus" label="tambah barang" :href="route('tools.create')"/>
     </x-header>
 
     <div class="overflow-x-auto mt-5">
@@ -60,57 +62,50 @@ new class extends Component
             <thead class="bg-gray-100 text-gray-700">
                 <tr>
                     <th class="px-4 py-2 border text-left">Cover</th>
-                    <th class="px-4 py-2 border text-left">Judul Buku</th>
-                    <th class="px-4 py-2 border text-left">Nama Penulis</th>
+                    <th class="px-4 py-2 border text-left">Judul barang</th>
                     <th class="px-4 py-2 border text-left">Kategori</th>
                     <th class="px-4 py-2 border text-center">Stok Tersedia</th>
                     <th class="px-4 py-2 border text-center">Total Stok</th>
-                    <th class="px-4 py-2 border text-center">Aksi</th>
+                    <th class="px-4 py-2 border text-center" colspan="2">Aksi</th>
                 </tr>
             </thead>
 
             <tbody>
-                @forelse ($books as $book)
+                @forelse ($tools as $tool)
                     <tr class="hover:bg-gray-50 transition">
                         
-                        {{-- Cover --}}
                         <td class="px-4 py-2 border w-24">
                             <img 
-                                src="{{ asset('storage/' . $book->cover_path) }}" 
-                                alt="{{ $book->title }}"
+                                src="{{ asset('storage/' . $tool->cover_path) }}" 
+                                alt="{{ $tool->title }}"
                                 class="w-16 h-20 object-cover rounded shadow"
                             >
                         </td>
 
-                        {{-- Judul --}}
                         <td class="px-4 py-2 border font-medium">
-                            {{ $book->title }}
+                            {{ $tool->name_tool }}
                         </td>
 
-                        {{-- Penulis --}}
                         <td class="px-4 py-2 border">
-                            {{ $book->author }}
+                            {{ $tool->category->category_name }}
                         </td>
 
-                        {{-- Kategori --}}
-                        <td class="px-4 py-2 border">
-                            {{ $book->category->category_name }}
-                        </td>
-
-                        {{-- Stok --}}
                         <td class="px-4 py-2 border text-center">
-                            {{ $book->qty }}
+                            {{ $tool->qty }}
                         </td>
 
-                        {{-- Total --}}
                         <td class="px-4 py-2 border text-center">
-                            {{ $book->qty }}
+                            {{ $tool->qty }}
                         </td>
 
-                        {{-- Aksi --}}
                         <td class="px-4 py-2 border text-center">
-                            <button class="text-blue-600 hover:underline">
-                                Detail
+                            <button wire:click="editTool({{$tool->id}})" class="inline-flex bg-blue-500 px-4 py-2 text-white rounded-md cursor-pointer">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                        </td>
+                        <td class="px-4 py-2 border text-center">
+                            <button wire:click="destroyTool({{$tool->id}})" wire:confirm="apakah kamu yakin ingin menghapus user ini?" class="inline-flex bg-red-500 px-4 py-2 text-white rounded-md cursor-pointer">
+                                <i class="bi bi-trash"></i>
                             </button>
                         </td>
 
@@ -123,7 +118,7 @@ new class extends Component
                                 <div class="text-4xl text-gray-400">📚</div>
 
                                 <h2 class="text-base font-semibold text-gray-700">
-                                    Data Buku tidak ditemukan
+                                    Data barang tidak ditemukan
                                 </h2>
 
                                 <p class="text-sm text-gray-500">
@@ -143,13 +138,12 @@ new class extends Component
                                         di semua kategori
                                     @endif
                                 </p>
-
                             </div>
                         </td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
-        <x-has-more-page :datas="$books" :target="$activeCategory" />
+        <x-has-more-page :datas="$tools" :target="$activeCategory" />
     </div>
 </div>

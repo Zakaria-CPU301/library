@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('books', function (Blueprint $table) {
+        Schema::table('tools', function (Blueprint $table) {
             $table->string('cover_path')->after('qty');
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('books', function (Blueprint $table) {
+        Schema::table('tools', function (Blueprint $table) {
             $table->dropColumn('cover_path');
         });
     }
