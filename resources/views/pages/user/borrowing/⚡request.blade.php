@@ -15,22 +15,37 @@ new class extends Component
 
     public function mount() {
         $this->userId = Auth::id();
-        $this->carts = Borrow::where('user_id', $this->userId)->get();
         $this->user = User::findOrFail($this->userId);
+        // $this->selectedTools = [9];
     }
 
     #[Validate('required')]
     public $dateRange;
 
+    public $selectAll = false;
+    #[Validate('required')]
+    public $selectedTools = [];
+
+    public function updatedSelectAll($value)
+    {
+        if ($value) {
+            $this->selectedTools = $this->carts->pluck('id')->toArray();
+        } else {
+            $this->selectedTools = [];
+        }
+    }
+
+    public function Borrow() {
+        
+    }
+    
     #[On('comp-cart')]
     public function compCart() {}
-    
-    #[On('comp-mark')]
-    public function compMark() {}
-    
+
     public function render() {
         $this->dispatch('mark-event');
-        return view('pages.user.borrowing.⚡request');
+        $this->carts = Borrow::latest()->where('user_id', $this->userId)->get();
+        return view('pages.user.borrowing.⚡request', ['carts' => $this->carts]);
     }
 
     public function save() {
@@ -47,9 +62,7 @@ new class extends Component
 
     <div class="container mx-auto px-6">
         <form wire:submit="save">
-
             <div class="grid grid-cols-4 gap-6">
-
                 <div class="col-span-1 bg-white p-4 rounded-xl shadow">
                     <h2 class="font-semibold text-lg mb-4">Data Peminjam</h2>
 
@@ -70,28 +83,29 @@ new class extends Component
                         </div>
                         <x-input-error :messages="$errors->get('dateRange')" />
                     </div>
-
-                    <div class="mt-3">
-                        <x-input-label value="Total Quantity" />
-                        <x-text-input type="number" min="1" wire:model="qty" />
-                    </div>
                 </div>
 
                 <div class="col-span-3 bg-white p-4 rounded-xl shadow">
-                    <h2 class="font-semibold text-lg mb-4">Pilih Barang</h2>
+                    <div class="w-full flex items-center justify-between mb-5">
+                        <h2 class="font-semibold text-lg">Pilih Barang</h2>
+                        <div class="flex gap-2.5">
+                            <input type="checkbox" wire:model.live="selectAll" id="checkAll" />
+                            <label for="checkAll" class="">Check All Items</label>
+                        </div>
+                    </div>
 
                     <div class="space-y-3 max-h-100 overflow-y-auto">
                         @forelse ($carts as $cart)
                             <label 
                                 class="flex items-center justify-between border p-4 rounded-xl cursor-pointer transition"
-                            >
+                                wire:key="{{$cart->id}}">
 
                                 <div class="flex items-center gap-4">
                                     <input 
                                         type="checkbox" 
                                         value="{{ $cart->id }}"
                                         wire:model="selectedTools"
-                                        class="rounded"
+                                        class="checkboxes rounded"
                                     >
 
                                     <img 
@@ -118,8 +132,6 @@ new class extends Component
 
                                 <input 
                                     type="number" 
-                                    min="1"
-                                    max="{{ $cart->tool->qty }}"
                                     wire:model="quantities.{{ $cart->id }}"
                                     {{-- @disabled(!in_array($cart->id, $selectedTools)) --}}
                                     class="w-20 text-center border rounded disabled:bg-gray-100"
@@ -138,7 +150,6 @@ new class extends Component
                                 <a href="{{route('tools.user')}}">Pinjam Sekarang</button>
                             </div>
                         @endforelse
-
                     </div>
                 </div>
 

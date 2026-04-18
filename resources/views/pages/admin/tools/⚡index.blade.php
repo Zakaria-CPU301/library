@@ -66,7 +66,7 @@ new class extends Component
                     <th class="px-4 py-2 border text-left">Kategori</th>
                     <th class="px-4 py-2 border text-center">Stok Tersedia</th>
                     <th class="px-4 py-2 border text-center">Total Stok</th>
-                    <th class="px-4 py-2 border text-center" colspan="2">Aksi</th>
+                    <th class="px-4 py-2 border text-center" colspan="3">Aksi</th>
                 </tr>
             </thead>
 
@@ -102,6 +102,11 @@ new class extends Component
                             <button wire:click="editTool({{$tool->id}})" class="inline-flex bg-blue-500 px-4 py-2 text-white rounded-md cursor-pointer">
                                 <i class="bi bi-pencil-square"></i>
                             </button>
+                        </td>
+                        <td class="px-4 py-2 border text-center">
+                            <a href="{{route('tools.view', $tool->id)}}" wire:navigate class="inline-flex bg-yellow-500 px-4 py-2 text-white rounded-md cursor-pointer">
+                                <i class="bi bi-eye"></i>
+                            </a>
                         </td>
                         <td class="px-4 py-2 border text-center">
                             <button wire:click="destroyTool({{$tool->id}})" wire:confirm="apakah kamu yakin ingin menghapus user ini?" class="inline-flex bg-red-500 px-4 py-2 text-white rounded-md cursor-pointer">

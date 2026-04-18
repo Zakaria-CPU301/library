@@ -7,25 +7,29 @@ use App\Models\Borrow;
 new class extends Component
 {
     public $idTool;
-    public $userId;
+    public $user;
     public $tools = []; 
 
     public function mount($idTool) {
-        $this->userId = Auth::id();
+        $this->user = Auth::user();
         $this->tools = Tool::findOrFail($idTool);
     }
 
     public function cart($toolId) {
         Borrow::updateOrCreate([
             'status' => 'draft',
-            'user_id' => Auth::id(),
+            'user_id' => $this->user->id,
             'tool_id' => $toolId,
         ],[
-            'user_id' => Auth::id(), 
+            'user_id' => $this->user->id, 
             'tool_id' => $toolId, 
             'penalty_id' => 1
         ]);
         $this->redirectRoute('borrowing.user.request', navigate: true);
+    }
+
+    public function edit($toolId) {
+        $this->redirectRoute('tools.edit', $toolId, navigate: true);
     }
 };
 ?>
@@ -48,7 +52,6 @@ new class extends Component
         </div>
 
         <div class="md:col-span-2 flex flex-col justify-between">
-
             <div>
                 <h1 class="text-3xl font-bold text-heading mb-2">
                     {{ $tools->name_tool }}
@@ -74,9 +77,15 @@ new class extends Component
             </div>
 
             <div class="mt-6 flex gap-3">
-                <button wire:click="cart({{$idTool}})" class="cursor-pointer px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                    Pinjam barang
-                </button>
+                @if ($user->role === 'admin')
+                    <x-label-button wire:click="edit({{$idTool}})" class="bg-gray-500 hover:bg-gray-300">
+                        Edit Barang
+                    </x-label-button>
+                @elseif ($user->role === 'user')
+                    <x-label-button wire:click="cart({{$idTool}})" class="bg-blue-500 hover:bg-blue-300">
+                        Pinjam barang
+                    </x-label-button>
+                @endif
 
                 {{-- <button class="px-5 py-2.5 border rounded-lg hover:bg-gray-100 transition">
                     Mark

@@ -20,13 +20,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::livewire('create', 'pages::admin.tools.create')->name('create');
             Route::livewire('edit/{toolId}', 'pages::admin.tools.edit')->name('edit');
         });
+
         Route::middleware('role:user')->group(function () {
             Route::livewire('/', 'pages::user.tools')->name('user');
-            Route::livewire('view/{idTool}', 'pages::user.tools.view-more')->name('view');
         });
+
+        Route::livewire('view/{idTool}', 'pages::public.tools.view-more')->name('view');
     });
-    // user : domain/borrowing, domain/borrowing/cart
-    // admin : domain/borrowing
+
     Route::prefix('borrowing')->name('borrowing.')->group(function () {
         Route::middleware('role:admin')->name('admin.')->group(function () {
             Route::livewire('/', 'pages::admin.borrowing.manage')->name('index');
