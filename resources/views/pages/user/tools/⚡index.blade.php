@@ -79,9 +79,7 @@ new class extends Component
 ?>
 <div class="z-40">
     <x-slot name="searchEngine"></x-slot>
-    <div class="bg-white py-2.5 sticky top-16.25">
-        <livewire:slide-filter :toggleButton="$categories" wire:model.live="activeCategory" />
-    </div>
+    <livewire:slide-filter :toggleButton="$categories" wire:model.live="activeCategory" />
 
     <div class="flex flex-col items-center px-10 mt-5" x-data="{openModal: false}">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">

@@ -81,6 +81,7 @@ new class extends Component
 <div>
     <x-slot name="searchEngine"></x-slot>
     <livewire:slide-filter wire:model.live="activeCollection" :toggleButton="$collections" />
+
     <x-header class="border-b">
         <x-header-info
             title="Manajemen User"
@@ -113,7 +114,11 @@ new class extends Component
                     <td class="border px-4 py-3">{{ $user->email }}</td>
                     <td class="border px-4 py-3 capitalize text-center">{{ $user->role }}</td>
                     <td class="border px-4 py-3 capitalize">{{ $user->collection->collection_name }}</td>
-                    <td class="border px-1 py-1 text-center" colspan="{{$user->email != 'superadmin@gmail.com' ? '1' : '3'}}"><button wire:click="showModal({{$user->id}})" @click="openModal = true" class="inline-flex bg-yellow-500 px-4 py-2 text-white rounded-md cursor-pointer"><i class="bi bi-eye"></i></button></td>
+                    <td class="border px-1 py-1 text-center" colspan="{{$user->email != 'superadmin@gmail.com' ? '1' : '3'}}">
+                        <button wire:click="showModal({{$user->id}})" @click="openModal = true" class="inline-flex bg-yellow-500 px-4 py-2 text-white rounded-md cursor-pointer">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </td>
                     @if ($user->email != 'superadmin@gmail.com')
                         <td class="border px-1 py-1 text-center">
                             <button wire:confirm="Are you sure want to {{collect($statusEnum)->diff($user->status)->first()}} this account?" wire:click="suspendedAccount({{$user->id}})" class="inline-flex bg-gray-800 px-4 py-2 text-white rounded-md cursor-pointer">

@@ -16,14 +16,30 @@ new class extends Component
     public function mount() {
         $this->userId = Auth::id();
         $this->user = User::findOrFail($this->userId);
-        // $this->selectedTools = [9];
     }
 
-    #[Validate('required')]
+    // date range
+    #[Validate('required', message: 'Jangka waktu meminjam wajib di isi')]
     public $dateRange;
+    public $startDate;
+    public $finishDate;
 
+    public function updatedDateRange() {
+        $date = explode(' ', $this->dateRange);
+        if (count($date) === 1) {
+            $this->addError('dateRange', 'Waktu pengembalian barang harus di tentukan');
+            return false;
+        }
+
+        $this->startDate = $date[0];
+        $this->finishDate = $date[2];
+        return true;
+    }
+
+    // checkbox items
     public $selectAll = false;
-    #[Validate('required')]
+    #[Validate('array')]
+    #[Validate('min:1', message: 'Minimal pilih 1 barang yang akan dipinjam')]
     public $selectedTools = [];
 
     public function updatedSelectAll($value)
@@ -33,12 +49,17 @@ new class extends Component
         } else {
             $this->selectedTools = [];
         }
+
+        $this->resetErrorBag('selectedTools');
     }
 
-    public function Borrow() {
-        
+    public function updatedSelectedTools($value) {
+        $this->selectAll = count($this->selectedTools) === $this->carts->count() ? true : false;
     }
+
+    // qty items
     
+
     #[On('comp-cart')]
     public function compCart() {}
 
@@ -48,8 +69,19 @@ new class extends Component
         return view('pages.user.borrowing.⚡request', ['carts' => $this->carts]);
     }
 
+    public function Borrow() {
+        dd($this->selectedTools);
+    }
+
+    public function unCart($cartId) {
+        Borrow::findOrFail($cartId)->delete();
+    }
+
     public function save() {
         $this->validate();
+        if ($this->carts->isEmpty()) $this->addError('selectedTools', 'Tidak ada barang yang akan di pinjam');
+        if(!$this->updatedDateRange()) return;
+        $this->Borrow();
     }
 
 };
@@ -59,6 +91,12 @@ new class extends Component
     <x-header>
         <x-header-info title="Pinjam barang" desc="" />
     </x-header>
+{{-- @dump($selectedTools)
+    @if ($errors->any())
+    @foreach ($errors->all() as $err)
+        <ul><li>{{$err}}</li></ul>
+    @endforeach
+    @endif --}}
 
     <div class="container mx-auto px-6">
         <form wire:submit="save">
@@ -79,32 +117,36 @@ new class extends Component
                     <div class="mt-3">
                         <x-input-label value="Borrow range date" />
                         <div wire:ignore>
-                            <x-text-input wire:model.live="dateRange" id="dateFlatpickr" />
+                            <x-text-input wire:model.live="dateRange" id="dateFlatpickr" placeholder="Tentukan waktu peminjaman" />
                         </div>
                         <x-input-error :messages="$errors->get('dateRange')" />
                     </div>
                 </div>
 
                 <div class="col-span-3 bg-white p-4 rounded-xl shadow">
+                    <x-input-error :messages="$errors->get('selectedTools')" />
                     <div class="w-full flex items-center justify-between mb-5">
                         <h2 class="font-semibold text-lg">Pilih Barang</h2>
-                        <div class="flex gap-2.5">
-                            <input type="checkbox" wire:model.live="selectAll" id="checkAll" />
-                            <label for="checkAll" class="">Check All Items</label>
+                        <div class="flex">
+                            {{-- <x-button-trash-icon :target="unCart()" :key="$cart->id" confirm="Yakin ingin membatalkan semua peminjaman barang?" /> --}}
+                            <div class="flex gap-2.5">
+                                <input type="checkbox" wire:model.live="selectAll" id="checkAll" />
+                                <label for="checkAll" class="">Check All Items</label>
+                            </div>
                         </div>
                     </div>
 
                     <div class="space-y-3 max-h-100 overflow-y-auto">
                         @forelse ($carts as $cart)
                             <label 
-                                class="flex items-center justify-between border p-4 rounded-xl cursor-pointer transition"
-                                wire:key="{{$cart->id}}">
+                                class="flex items-center justify-between hover:bg-black border p-4 rounded-xl cursor-pointer transition"
+                                wire:key="{{__('cart-') . $cart->id}}">
 
                                 <div class="flex items-center gap-4">
                                     <input 
                                         type="checkbox" 
                                         value="{{ $cart->id }}"
-                                        wire:model="selectedTools"
+                                        wire:model.live="selectedTools"
                                         class="checkboxes rounded"
                                     >
 
@@ -127,15 +169,21 @@ new class extends Component
                                             Stok: {{ $cart->tool->qty }}
                                         </p>
                                     </div>
-
                                 </div>
 
-                                <input 
-                                    type="number" 
-                                    wire:model="quantities.{{ $cart->id }}"
-                                    {{-- @disabled(!in_array($cart->id, $selectedTools)) --}}
-                                    class="w-20 text-center border rounded disabled:bg-gray-100"
-                                >
+                                <div class="flex gap-5 items-center">
+                                    <input 
+                                        type="number" 
+                                        wire:model="quantities.{{ $cart->id }}"
+                                        {{-- @disabled(!in_array($cart->id, $selectedTools)) --}}
+                                        class="w-30 text-center border rounded disabled:bg-gray-100"
+                                    >
+
+                                    <x-nav-icon-button-load 
+                                        target="unCart({{$cart->id}})" 
+                                        i="bi bi-trash"
+                                        confirm="Apakah kamu yakin ingin membatalkan peminjaman barang ini?" />
+                                </div>
                             </label>
                         @empty
                             <div class="flex flex-col items-center justify-center gap-3">
@@ -147,12 +195,11 @@ new class extends Component
                                     Belum ada draft peminjaman barang
                                 </h2>
 
-                                <a href="{{route('tools.user')}}">Pinjam Sekarang</button>
+                                <a href="{{route('tools.user')}}" wire:navigate>Pinjam Sekarang</a>
                             </div>
                         @endforelse
                     </div>
                 </div>
-
             </div>
 
             <div class="mt-6">
@@ -160,7 +207,6 @@ new class extends Component
                     Pinjam
                 </x-primary-button>
             </div>
-
         </form>
     </div>
 

@@ -73,41 +73,43 @@ new class extends Component
                 <button @click="markOpen=! markOpen; JSON.parse(localStorage.setItem('mark-open', markOpen))">✕</button>
             </div>
 
-            @forelse ($marks as $mark)
-                <div class="flex p-4" wire:key="{{__('mark-') . $mark->id}}">
-                    <img src="{{asset('storage/' . $mark->tool->cover_path)}}" alt="{{$mark->tool->name_tool}}" class="h-37.5">
-                    <div class="flex flex-col ms-5 overflow-y-auto">
-                        <h1 class="text-xl font-bold text-heading mb-2">
-                            {{ $mark->tool->name_tool }}
-                        </h1>
-                        <p class="text-sm text-gray-500 mb-4">
-                            {{ $mark->tool->category->category_name }}
-                        </p>
-                        <div class="flex">
-                            <button
-                                wire:click="viewMore({{$mark->tool->id}})"
-                                class="relative z-50 text-blue-800 px-4 py-2 rounded-lg cursor-pointer shadow hover:shadow-xl transition duration-200">
+            <div class="overflow-y-auto">
+                @forelse ($marks as $mark)
+                    <div class="flex p-4" wire:key="{{__('mark-') . $mark->id}}">
+                        <img src="{{asset('storage/' . $mark->tool->cover_path)}}" alt="{{$mark->tool->name_tool}}" class="h-37.5">
+                        <div class="flex flex-col ms-5 overflow-y-auto">
+                            <h1 class="text-xl font-bold text-heading mb-2">
+                                {{ $mark->tool->name_tool }}
+                            </h1>
+                            <p class="text-sm text-gray-500 mb-4">
+                                {{ $mark->tool->category->category_name }}
+                            </p>
+                            <div class="flex">
+                                <button
+                                    wire:click="viewMore({{$mark->tool->id}})"
+                                    class="relative z-50 text-blue-800 px-4 py-2 rounded-lg cursor-pointer shadow hover:shadow-xl transition duration-200">
 
-                                <i class="bi bi-eye"></i>
-                            </button>
-                            <button
-                                wire:click="unMark({{$mark->id}})"
-                                class="relative z-50 text-blue-800 px-4 py-2 rounded-lg cursor-pointer shadow hover:shadow-xl transition duration-200">
-                                <div class="" wire:loading.remove wire:target="unMark({{$mark->id}})">
-                                    <i class="bi bi-bookmark-check-fill"></i>
-                                </div>
-                                <x-loading-state-session
-                                    class="h-4 w-4"
-                                    wire:loading wire:target="unMark({{$mark->id}})" />
-                            </button>
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button
+                                    wire:click="unMark({{$mark->id}})"
+                                    class="relative z-50 text-blue-800 px-4 py-2 rounded-lg cursor-pointer shadow hover:shadow-xl transition duration-200">
+                                    <div class="" wire:loading.remove wire:target="unMark({{$mark->id}})">
+                                        <i class="bi bi-bookmark-check-fill"></i>
+                                    </div>
+                                    <x-loading-state-session
+                                        class="h-4 w-4"
+                                        wire:loading wire:target="unMark({{$mark->id}})" />
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            @empty
-                <div class="p-5">
-                    <x-indicator-information-ping>Barang belum ada yang di simpan</x-indicator-information-ping>
-                </div>
-            @endforelse
+                @empty
+                    <div class="p-5">
+                        <x-indicator-information-ping>Barang belum ada yang di simpan</x-indicator-information-ping>
+                    </div>
+                @endforelse
+            </div>
         </div>
     </div>
 </div>

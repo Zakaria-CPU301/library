@@ -26,17 +26,13 @@
         <!-- Settings Dropdown -->
         <div class="flex sm:items-center sm:ms-6">
             <div class="relative flex gap-5 me-2.5">
-                <a
-                    href="{{route(Auth::user()->role === 'user' ? 'borrowing.user.request' : 'borrowing.admin.index')}}" wire:navigate
-                    class="relative z-50 text-black px-4 py-2 rounded-lg shadow hover:shadow-xl transtion duration-200">
-                    <i class="bi bi-cart-fill"></i>
-                </a>
+                <x-nav-icon-button
+                    href="{{route(Auth::user()->role === 'user' ? 'borrowing.user.request' : 'borrowing.admin.index')}}"
+                    i="bi bi-cart-fill" />
                 @if (Auth::user()->role === 'user')
-                    <button 
-                        @click=" $dispatch('open-mark') "
-                        class="relative z-50 text-blue-800 px-4 py-2 rounded-lg cursor-pointer shadow hover:shadow-xl transition duration-200">
-                        <i class="bi bi-bookmark-fill"></i>
-                    </button>
+                    <x-nav-icon-button 
+                        @click=" $dispatch('open-mark') " 
+                        i="bi bi-bookmark-fill text-blue-800" />
                 @endif
             </div>
 
