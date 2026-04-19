@@ -53,24 +53,60 @@ new class extends Component
         $this->resetErrorBag('selectedTools');
     }
 
-    public function updatedSelectedTools($value) {
+    public function updatedSelectedTools($values) {
         $this->selectAll = count($this->selectedTools) === $this->carts->count() ? true : false;
+        
+        // foreach (array_diff($this->carts->pluck('id')->toArray(), $values) as $uncheck) {
+        //     $this->resetErrorBag("quantities.$uncheck");
+        // }
+
+        // foreach (array_diff($values, array_keys($this->quantities)) as $miss) {
+        //     $this->addError("quantities.$miss", 'jumlah barang yang akan di pesan wajib di isi');
+        // }
     }
 
     // qty items
+    public $quantities = [];
+
+    public function updatedQuantities($value, $key) {
+        // if (!$value) {
+        //     $this->addError("quantities.$key", 'jumlah barang yang akan di pesan wajib di isi');
+        // } else {
+        //     $this->resetErrorBag("quantities.$key");
+        // }
+    }
+    // public function quantitiesRules($toolId)
+    // {
+    //     $cart = $this->carts->firstWhere('id', $toolId);
+
+    //     if (!$cart) {
+    //         return ['integer']; // fallback biar gak error
+    //     }
+
+    //     $max = $cart->tool->qty;
+
+    //     return ['integer', 'max:' . $max];
+    // }
     
+    // public function updatedQuantities($value, $key) {
+    //     $this->validateOnly("quantities.$key", [
+    //         "quantities.$key" => $this->quantitiesRules($key),
+    //     ]);
+    // }
 
     #[On('comp-cart')]
     public function compCart() {}
 
     public function render() {
         $this->dispatch('mark-event');
-        $this->carts = Borrow::latest()->where('user_id', $this->userId)->get();
+        $this->carts = Borrow::latest()->where('user_id', $this->userId)->where('status', 'draft')->get();
         return view('pages.user.borrowing.⚡request', ['carts' => $this->carts]);
     }
 
     public function Borrow() {
-        dd($this->selectedTools);
+        foreach ($this->selectedTools as $selected) {
+            Borrow::where('user_id', $this->userId)->where('id', $selected)->update(['status' => 'waiting']);
+        }
     }
 
     public function unCart($cartId) {
@@ -82,6 +118,8 @@ new class extends Component
         if ($this->carts->isEmpty()) $this->addError('selectedTools', 'Tidak ada barang yang akan di pinjam');
         if(!$this->updatedDateRange()) return;
         $this->Borrow();
+
+        $this->redirectRoute("borrowing.user.index", navigate: true);
     }
 
 };
@@ -91,12 +129,13 @@ new class extends Component
     <x-header>
         <x-header-info title="Pinjam barang" desc="" />
     </x-header>
-{{-- @dump($selectedTools)
+{{-- @dump($selectedTools) --}}
     @if ($errors->any())
+    @dump($errors->get('quantities.54'))
     @foreach ($errors->all() as $err)
         <ul><li>{{$err}}</li></ul>
     @endforeach
-    @endif --}}
+    @endif
 
     <div class="container mx-auto px-6">
         <form wire:submit="save">
@@ -172,12 +211,16 @@ new class extends Component
                                 </div>
 
                                 <div class="flex gap-5 items-center">
-                                    <input 
-                                        type="number" 
-                                        wire:model="quantities.{{ $cart->id }}"
-                                        {{-- @disabled(!in_array($cart->id, $selectedTools)) --}}
-                                        class="w-30 text-center border rounded disabled:bg-gray-100"
-                                    >
+                                    <div class="">
+                                        <input 
+                                            type="number" 
+                                            max="{{$cart->tool->qty}}" min="0"
+                                            wire:model.live="quantities.{{ $cart->id }}"
+                                            {{-- @disabled(!in_array($cart->id, $selectedTools)) --}}
+                                            class="w-30 text-center border rounded disabled:bg-gray-100"
+                                        >
+                                        <x-input-error :messages="$errors->get('quantities.' . $cart->id)" />
+                                    </div>
 
                                     <x-nav-icon-button-load 
                                         target="unCart({{$cart->id}})" 

@@ -16,7 +16,7 @@ class Borrow extends Model
         return $this->belongsTo(Tool::class);
     }
 
-    public function users() {
-        return $this->hasMany(User::class);
+    public function user() {
+        return $this->belongsTo(User::class);
     }
 }
