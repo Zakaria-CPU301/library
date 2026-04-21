@@ -15,6 +15,7 @@ new class extends Component
     public function render() {
         $this->dispatch('mark-event');
         $query = Tool::with('category');
+        $this->tools = $query;
         $this->tools = collect([
             'countTool' => $query->count(),
             'available' => $query->where('status', 'available')->count(),

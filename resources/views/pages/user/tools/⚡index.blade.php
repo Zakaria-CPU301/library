@@ -114,8 +114,8 @@ new class extends Component
                     </p>
 
                     {{-- Button --}}
-                    <div class="mt-auto flex space-x-4">
-                        <button wire:click="viewMore({{$tool->id}})" class="w-full cursor-pointer flex items-center justify-center gap-2 text-sm bg-gray-100 border border-gray-300 hover:bg-gray-200 rounded-lg px-4 py-2 transition">
+                    <div class="mt-auto flex space-x-2">
+                        <button wire:click="viewMore({{$tool->id}})" class="w-full cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap text-sm bg-gray-100 border border-gray-300 hover:bg-gray-200 rounded-lg px-4 py-2 transition">
                             Lebih Banyak
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-width="2" d="M5 12h14m0 0-4 4m4-4-4-4" />

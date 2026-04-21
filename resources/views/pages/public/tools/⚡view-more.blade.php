@@ -23,8 +23,8 @@ new class extends Component
         ],[
             'user_id' => $this->user->id, 
             'tool_id' => $toolId, 
-            'penalty_id' => 1
-        ]);
+            'penalty_id' => 1,
+        ])->touch();
         $this->redirectRoute('borrowing.user.request', navigate: true);
     }
 

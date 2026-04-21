@@ -10,7 +10,7 @@ new class extends Component
     public $histories = [];
     public function mount() {
         $this->userId = Auth::id();
-        $this->histories = Borrow::where('user_id', $this->userId)->where('status', '!=', 'draft')->get();
+        $this->histories = Borrow::where('user_id', $this->userId)->where('status', '!=', 'draft')->latest('updated_at')->get();
     }
 };
 ?>
@@ -50,7 +50,11 @@ new class extends Component
                 </div>
             </li>
         @empty
-            <p>asldkj</p>
+            <x-empty-data-rows 
+                class="bg-green-500"
+                icon="🔨" info="Belum ada aktivitas peminjaman barang" 
+                :label="__('Lakukan Peminjaman')" 
+                :route="route('borrowing.user.request')" />
         @endforelse
     </ul>
 </div>

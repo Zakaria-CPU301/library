@@ -28,7 +28,7 @@
             <div class="relative flex gap-5 me-2.5">
                 <x-nav-icon-button
                     href="{{route(Auth::user()->role === 'user' ? 'borrowing.user.request' : 'borrowing.admin.index')}}"
-                    i="bi bi-cart-fill" />
+                    i="bi bi-cart-fill text-slate-900" />
                 @if (Auth::user()->role === 'user')
                     <x-nav-icon-button 
                         @click=" $dispatch('open-mark') " 

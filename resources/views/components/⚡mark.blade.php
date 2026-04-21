@@ -98,10 +98,10 @@ new class extends Component
                                     @if ($isCartProduct->status == 'draft')
                                         <x-nav-icon-button-load target="unCart({{$mark->tool_id}})" i="bi bi-cart-check-fill text-green-900" />
                                     @else
-                                        <x-nav-icon-button-load target="cart({{$mark->tool_id}})" i="bi bi-cart-fill text-green-900" />
+                                        <x-nav-icon-button-load target="cart({{$mark->tool_id}})" i="bi bi-cart text-green-900" />
                                     @endif
                                 @else
-                                    <x-nav-icon-button-load target="cart({{$mark->tool_id}})" i="bi bi-cart-fill text-green-900" />
+                                    <x-nav-icon-button-load target="cart({{$mark->tool_id}})" i="bi bi-cart text-green-900" />
                                 @endif
 
                                 <x-nav-icon-button-load target="viewMore({{$mark->tool->id}})" i="bi bi-eye-fill text-yellow-500" />
