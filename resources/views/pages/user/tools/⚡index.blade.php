@@ -40,7 +40,7 @@ new class extends Component
         $this->searchKey = $key;
     }
 
-    #[On('comp-mark')]
+    #[On('comp-cart')]
     public function compMark() {} // terima dari mark (render trigger -> update ulang component)
 
 

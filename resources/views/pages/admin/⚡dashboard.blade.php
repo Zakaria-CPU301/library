@@ -9,7 +9,7 @@ new class extends Component
 {
     public $tools = [];
 
-    #[On('comp-mark')]
+    #[On('comp-cart')]
     public function compMark() {}
     
     public function render() {

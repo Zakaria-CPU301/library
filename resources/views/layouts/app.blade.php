@@ -61,13 +61,15 @@
                     </div>
                 </main>
 
-                <div x-data="{markOpen: JSON.parse(localStorage.getItem('mark-open') ?? 'false')}"
-                    @open-mark.window="
-                        markOpen = true;
-                        localStorage.setItem('mark-open', markOpen)
-                    ">
-                    <livewire:mark />
-                </div>
+                @if (request()->segment(1) != 'login')
+                    <div x-data="{markOpen: JSON.parse(localStorage.getItem('mark-open') ?? 'false')}"
+                        @open-mark.window="
+                            markOpen = true;
+                            localStorage.setItem('mark-open', markOpen)
+                        ">
+                        <livewire:mark />
+                    </div>
+                @endif
             </div>
         </div>
 

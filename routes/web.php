@@ -45,8 +45,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::livewire('import', 'pages::admin.accounts.register')->name('import');
         });
     });
-
-    Route::livewire('demo', 'pages::demo');
 });
 
 require __DIR__ . '/auth.php';

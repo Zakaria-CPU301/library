@@ -68,13 +68,13 @@ new class extends Component
     // qty items
     public $quantities = [];
 
-    public function updatedQuantities($value, $key) {
+    // public function updatedQuantities($value, $key) {
         // if (!$value) {
         //     $this->addError("quantities.$key", 'jumlah barang yang akan di pesan wajib di isi');
         // } else {
         //     $this->resetErrorBag("quantities.$key");
         // }
-    }
+    // }
     // public function quantitiesRules($toolId)
     // {
     //     $cart = $this->carts->firstWhere('id', $toolId);
@@ -105,7 +105,14 @@ new class extends Component
 
     public function Borrow() {
         foreach ($this->selectedTools as $selected) {
-            Borrow::where('user_id', $this->userId)->where('id', $selected)->update(['status' => 'waiting']);
+            Borrow::where('user_id', $this->userId)
+                    ->where('id', $selected)
+                    ->update([
+                        'status' => 'waiting',
+                        'borrow_date' => $this->startDate,
+                        'return_date' => $this->finishDate,
+                        'qty' => $this->quantities[$selected]
+                    ]);
         }
     }
 
@@ -121,7 +128,6 @@ new class extends Component
 
         $this->redirectRoute("borrowing.user.index", navigate: true);
     }
-
 };
 ?>
 
@@ -178,7 +184,7 @@ new class extends Component
                     <div class="space-y-3 max-h-100 overflow-y-auto">
                         @forelse ($carts as $cart)
                             <label 
-                                class="flex items-center justify-between hover:bg-black border p-4 rounded-xl cursor-pointer transition"
+                                class="flex items-center justify-between hover:bg-black/5 border p-4 rounded-xl cursor-pointer transition"
                                 wire:key="{{__('cart-') . $cart->id}}">
 
                                 <div class="flex items-center gap-4">

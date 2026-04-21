@@ -19,11 +19,11 @@ new class extends Component
     <x-header>
         <x-header-info title="History Peminjaman" desc="Semua aktivitas peminjaman barang yang anda lakukan" />
     </x-header>
-    <ul role="list" class="divide-y divide-white/5">
+    <ul role="list" class="bg-white px-5 rounded-xl">
         @forelse ($histories as $history)
             <li class="flex justify-between gap-x-6 py-5">
                 <div class="flex min-w-0 gap-x-4">
-                    <img src="{{asset('storage/' . $history->tool->cover_path)}}" alt="" class="size-12 flex-none rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10" />
+                    <img src="{{asset('storage/' . $history->tool->cover_path)}}" alt="" class="h-52 flex-none rounded-lg bg-gray-800 outline -outline-offset-1 outline-white/10" />
                     <div class="min-w-0 flex-auto">
                         <p class="text-sm/6 font-semibold text-black">{{$history->tool->name_tool}}</p>
                         <p class="mt-1 truncate text-xs/5 text-gray-400">
@@ -33,13 +33,15 @@ new class extends Component
                             @if ($status === 'waiting')
                                 Menunggu jawaban
                             @elseif($status === 'accept')
-                                Barang bisa di ambil
-                            @elseif($status === 'rejected')
-                                Permintaan peminjaman di tolak
+                                <x-indicator-information-ping bgIndicator="bg-gray-500" class="text-gray-400 font-bold">Barang bisa di ambil</x-indicator-information-ping>
+                            @elseif($status === 'reject')
+                                <x-indicator-information-ping bgIndicator="bg-red-500" class="text-red-400 font-bold">Peminjaman barang di tolak</x-indicator-information-ping>
                             @else 
                                 Barang dikembalikan
                             @endif
                         </p>
+
+                        <p class="text-sm mt-2">Jumlah peminjaman: {{$history->qty}}</p>
                     </div>
                 </div>
                 <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
