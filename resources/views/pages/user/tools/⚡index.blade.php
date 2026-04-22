@@ -169,7 +169,7 @@ new class extends Component
 
         @isset($coverPreview)
             <x-modal-detail :labelModal="$coverPreview->title">
-                <div class="flex flex-col w-full bg-white rounded-2xl shadow py-3">
+                <div class="flex flex-col w-full bg-white rounded-2xl shadow p-3">
                     <img 
                         src="{{ asset('storage/' . $coverPreview->cover_path) }}"
                         class="max-h-[70vh] w-full object-contain rounded-t-2xl"

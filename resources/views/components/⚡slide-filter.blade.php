@@ -15,7 +15,7 @@ new class extends Component
 };
 ?>
 
-<div class="bg-white sticky top-16.25 mt-2.5 rounded-lg pr-3 p-2.5">
+<div class="bg-white sticky top-16.25 mt-2.5 rounded-lg pr-3 p-2.5 z-10">
     <div class="flex gap-2 overflow-x-scroll text-sm">
         <button type="button" wire:click="filterUser(0)" class="{{$value == 0 ? 'bg-black text-white' : 'bg-slate-500'}} px-4 py-2 rounded-lg inline-flex font-bold capitalize cursor-pointer hover:bg-gray-700 text-white duration-100">{{ __('semua') }}</button>
         @foreach ($toggleButton as $toggle)

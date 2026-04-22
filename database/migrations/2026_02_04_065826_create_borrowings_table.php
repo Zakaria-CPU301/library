@@ -16,7 +16,7 @@ return new class extends Migration
             $table->date('borrow_date')->nullable();
             $table->date('return_date')->nullable();
             $table->integer('qty')->nullable();
-            $table->enum('status', ['draft', 'waiting', 'accept', 'reject', 'return']);
+            $table->enum('status', ['draft', 'waiting', 'accept', 'reject', 'borrowed', 'return']);
 
             $table->foreignId('penalty_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');

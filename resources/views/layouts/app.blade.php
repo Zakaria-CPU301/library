@@ -23,6 +23,8 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    @stack('styles')
+
     <style>
         *::-webkit-scrollbar {
             display: none;

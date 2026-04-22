@@ -24,9 +24,10 @@ new class extends Component
             <li class="flex justify-between gap-x-6 py-5">
                 <div class="flex min-w-0 gap-x-4">
                     <img src="{{asset('storage/' . $history->tool->cover_path)}}" alt="" class="h-52 flex-none rounded-lg bg-gray-800 outline -outline-offset-1 outline-white/10" />
-                    <div class="min-w-0 flex-auto">
-                        <p class="text-sm/6 font-semibold text-black">{{$history->tool->name_tool}}</p>
-                        <p class="mt-1 truncate text-xs/5 text-gray-400">
+                    <div class="min-w-0 flex-auto space-y-2.5">
+                        <a href="" class="py-1 px-2 bg-gray-400 text-sm text-white rounded-xl">{{Str::ucfirst($history->tool->category->category_name)}}</a>
+                        <p class="mt-2 font-semibold text-xl text-black">{{$history->tool->name_tool}}</p>
+                        <p class="truncate text-xs/5 text-gray-400">
                             @php
                                 $status = $history->status
                             @endphp
@@ -41,12 +42,12 @@ new class extends Component
                             @endif
                         </p>
 
-                        <p class="text-sm mt-2">Jumlah peminjaman: {{$history->qty}}</p>
+                        <p class="text-sm">Jumlah peminjaman: {{$history->qty}}</p>
                     </div>
                 </div>
                 <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
                     <p class="text-sm/6 text-black">{{$history->user->username}}</p>
-                    <p class="mt-1 text-xs/5 text-gray-400">{{$history->updated_at->diffForHumans()}}</time></p>
+                    <p class="mt-1 text-xs/5 text-gray-400">{{$history->updated_at->format('d M Y')}}</time></p>
                 </div>
             </li>
         @empty

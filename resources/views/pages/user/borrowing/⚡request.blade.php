@@ -3,7 +3,7 @@
 use Livewire\Component;
 use Livewire\Attributes\Validate;
 use App\Models\User;
-use App\Models\Borrow;
+use App\Models\Borrow as Cart;
 use Livewire\Attributes\On;
 
 new class extends Component
@@ -16,7 +16,7 @@ new class extends Component
     public function mount() {
         $this->userId = Auth::id();
         $this->user = User::findOrFail($this->userId);
-        $this->carts = Borrow::where('user_id', $this->userId)->where('status', 'draft')->get();
+        $this->carts = Cart::where('user_id', $this->userId)->where('status', 'draft')->get();
         foreach ($this->carts as $cart) {
             $this->quantities[$cart->id] = 1;
         }
@@ -74,6 +74,13 @@ new class extends Component
         ];
     }
 
+    protected function messages() {
+        return [
+            'quantities.*.min' => 'Total peminjaman terlalu sedikit, minimal 1',
+            'quantities.*.required' => 'Total peminjaman harus di tentukan'
+        ];
+    }
+
     public function updatedQuantities($value, $key) {
         $this->validateOnly("quantities.$key", $this->qtyRules($key));
     }
@@ -83,13 +90,13 @@ new class extends Component
 
     public function render() {
         $this->dispatch('mark-event');
-        $this->carts = Borrow::where('user_id', $this->userId)->where('status', 'draft')->latest('updated_at')->get();
+        $this->carts = Cart::where('user_id', $this->userId)->where('status', 'draft')->latest('updated_at')->get();
         return view('pages.user.borrowing.⚡request', ['carts' => $this->carts]);
     }
 
-    public function Borrow() {
+    public function Cart() {
         foreach ($this->selectedTools as $selected) {
-            Borrow::where('user_id', $this->userId)
+            Cart::where('user_id', $this->userId)
                     ->where('id', $selected)
                     ->update([
                         'status' => 'waiting',
@@ -102,7 +109,7 @@ new class extends Component
 
     public function manyUnCart() {
         foreach ($this->selectedTools as $key) {
-            Borrow::findOrFail($key)->delete();
+            Cart::findOrFail($key)->delete();
         }
         $this->selectedTools = [];
         $this->updatedSelectedTools(null);
@@ -197,9 +204,11 @@ new class extends Component
                                     >
 
                                     <div class="flex flex-col">
-                                        <p class="font-semibold text-gray-800">
-                                            {{ $cart->tool->name_tool }}
-                                        </p>
+                                        <div>
+                                            <p class="font-semibold text-gray-800">
+                                                {{ $cart->tool->name_tool }}
+                                            </p>
+                                        </div>
 
                                         <p class="text-sm text-gray-500">
                                             Stok Tersedia: {{ $cart->tool->qty }}
@@ -212,12 +221,12 @@ new class extends Component
                                 </div>
 
                                 <div class="flex gap-5 items-center">
-                                    <div class="">
+                                    <div class="items-end flex flex-col">
                                         <input 
                                             type="number" 
                                             wire:model.live="quantities.{{ $cart->id }}"
                                             {{-- @disabled(!in_array($cart->id, $selectedTools)) --}}
-                                            class="w-30 text-center border rounded disabled:bg-gray-100"
+                                            class="w-30 text-center items-end border rounded disabled:bg-gray-100"
                                         >
                                         <x-input-error :messages="$errors->get('quantities.' . $cart->id)" />
                                     </div>

@@ -31,7 +31,7 @@ new class extends Component
 
 <div>
     <x-header class="border-b">
-        <x-header-info title="dashboard admin" desc="ringkasan aktivitas perpustakaan" />
+        <x-header-info :title="__('dashboard ' . auth()->user()->role)" desc="ringkasan aktivitas perpustakaan" />
     </x-header>
 
     <div class="flex justify-between mt-5">

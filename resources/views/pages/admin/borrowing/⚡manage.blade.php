@@ -7,47 +7,82 @@ new class extends Component
 {
     public $borrows;
 
-    public function mount() {
-        $this->borrows = Borrow::all();
+    public function status($status, $borrowId)
+    {
+        Borrow::findOrFail($borrowId)->update(['status' => $status]);
+    }
+
+    public function render()
+    {
+        $this->borrows = Borrow::with([
+            'tool',
+            'user'
+        ])->get();
+
+        return view('pages.admin.borrowing.⚡manage');
     }
 };
 ?>
+
+@push('styles')
+<style>
+    .status-btn {
+        button {
+            background-color: gray;
+            padding-inline: 5px;
+            padding-block: 3px;
+            color: white;
+            border-radius: 10px;
+        }
+    }
+</style>
+@endpush
 
 <div>
     <x-header>
         <x-header-info title="Kelola Peminjaman" desc="Kelola semua peminjaman barang yang di ajukan pengguna" />
     </x-header>
-    <ul role="list" class="divide-y divide-white/5">
+    <ul role="list" class="bg-white px-5 rounded-xl">
+        @forelse ($borrows as $borrow)
+        @php
+        $status = $borrow->status
+        @endphp
         <li class="flex justify-between gap-x-6 py-5">
             <div class="flex min-w-0 gap-x-4">
-            <img src="https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" class="size-12 flex-none rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10" />
-            <div class="min-w-0 flex-auto">
-                <p class="text-sm/6 font-semibold text-black">Michael Foster</p>
-                <p class="mt-1 truncate text-xs/5 text-gray-400">michael.foster@example.com</p>
-            </div>
-            </div>
-            <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-            <p class="text-sm/6 text-black">Co-Founder / CTO</p>
-            <p class="mt-1 text-xs/5 text-gray-400">Last seen <time datetime="2023-01-23T13:23Z">3h ago</time></p>
-            </div>
-        </li>
-        <li class="flex justify-between gap-x-6 py-5">
-            <div class="flex min-w-0 gap-x-4">
-            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" class="size-12 flex-none rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10" />
-            <div class="min-w-0 flex-auto">
-                <p class="text-sm/6 font-semibold text-black">Dries Vincent</p>
-                <p class="mt-1 truncate text-xs/5 text-gray-400">dries.vincent@example.com</p>
-            </div>
-            </div>
-            <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-            <p class="text-sm/6 text-black">Business Relations</p>
-            <div class="mt-1 flex items-center gap-x-1.5">
-                <div class="flex-none rounded-full bg-emerald-500/30 p-1">
-                <div class="size-1.5 rounded-full bg-emerald-500"></div>
+                <img src="{{asset('storage/' . $borrow->tool->cover_path)}}" alt="" class="h-52 flex-none rounded-lg bg-gray-800 outline -outline-offset-1 outline-white/10" />
+                <div class="min-w-0 flex-auto space-y-2.5">
+                    <div class="flex flex-row-reverse gap-3.5 items-center text-xs">
+                        <a href="" class="py-1 px-2 bg-gray-400 text-sm text-white rounded-xl">{{Str::ucfirst($borrow->tool->category->category_name)}}</a>
+                        <p class="text-gray-400">{{$borrow->updated_at->format('d M Y')}}</p>
+                    </div>
+                    <p class="mt-2 font-semibold text-xl text-black">{{$borrow->tool->name_tool}}</p>
+                    <p class="truncate text-xs/5 text-gray-400">{{$status}}</p>
+
+                    <p class="text-sm">Jumlah peminjaman: {{$borrow->qty}}</p>
                 </div>
-                <p class="text-xs/5 text-gray-400">Online</p>
             </div>
+            <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+                <div class="">
+                    <p class="text-sm/6 text-black">{{$borrow->user->username}}</p>
+                </div>
+                <div class="status-btn flex">
+                    @if ($status === 'waiting')
+                    <button type="button" wire:click="status('accept', {{$borrow->id}})">Terima</button>
+                    <button type="button" wire:click="status('reject', {{$borrow->id}})">Tolak</button>
+                    @elseif($status === 'accept')
+                    <button type="button" wire:click="status('borrowed', {{$borrow->id}})">Dipinjam</button>
+                    @else
+                    <button type="button" wire:click="status('return', {{$borrow->id}})">Dikembalikan</button>
+                    @endif
+                </div>
             </div>
         </li>
+        @empty
+        <x-empty-data-rows
+            class="bg-green-500"
+            icon="🔨" info="Belum ada aktivitas peminjaman barang"
+            :label="__('Lakukan Peminjaman')"
+            :route="route('borrowing.user.request')" />
+        @endforelse
     </ul>
 </div>
