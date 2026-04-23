@@ -12,13 +12,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::livewire('/dashboard', 'pages::admin.dashboard')->name('dashboard');
+    Route::livewire('/dashboard', 'pages::public.dashboard')->name('dashboard');
 
     Route::prefix('tools')->name('tools.')->group(function () {
         Route::middleware('role:admin')->group(function () {
             Route::livewire('manage', 'pages::admin.tools')->name('admin');
             Route::livewire('create', 'pages::admin.tools.create')->name('create');
             Route::livewire('edit/{toolId}', 'pages::admin.tools.edit')->name('edit');
+            Route::livewire('category', 'pages::admin.tools.manage-category')->name('category');
         });
 
         Route::middleware('role:user')->group(function () {
@@ -35,6 +36,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::middleware('role:user')->name('user.')->group(function () {
             Route::livewire('history', 'pages::user.borrowing.history')->name('index');
             Route::livewire('cart', 'pages::user.borrowing.request')->name('request');
+            Route::livewire('print/{borrowId}', 'pages::user.borrowing.print')->name('print');
         });
     });
 

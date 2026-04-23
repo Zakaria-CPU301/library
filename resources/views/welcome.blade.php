@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html lang="id">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Landing Page</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @livewireStyles
-</head>
-
-<body class="bg-linear-to-br from-orange-50 via-white to-orange-100 text-gray-800 min-h-screen flex items-center">
+<x-clean-layout>
     <!-- CONTAINER -->
     <div class="w-full max-w-6xl mx-auto px-6">
 
@@ -72,7 +62,4 @@
 
     </div>
 
-    @livewireScripts
-</body>
-
-</html>
+</x-clean-layout>

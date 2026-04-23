@@ -12,6 +12,10 @@ new class extends Component
         $this->userId = Auth::id();
         $this->histories = Borrow::where('user_id', $this->userId)->where('status', '!=', 'draft')->latest('updated_at')->get();
     }
+
+    public function print($borrowId) {
+        $this->redirectRoute('borrowing.user.print', $borrowId, navigate: true);
+    }
 };
 ?>
 
@@ -47,7 +51,10 @@ new class extends Component
                 </div>
                 <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
                     <p class="text-sm/6 text-black">{{$history->user->username}}</p>
-                    <p class="mt-1 text-xs/5 text-gray-400">{{$history->updated_at->format('d M Y')}}</time></p>
+                    <p class="mt-1 text-xs/5 text-gray-400">{{$history->updated_at->format('d M Y')}}</p>
+                    @if ($status === 'accept')
+                    <button type="button" wire:click="print({{$history->id}})">Cetak Leporan Peminjaman</button>
+                    @endif
                 </div>
             </li>
         @empty

@@ -65,7 +65,7 @@ new class extends Component
                 <div class="">
                     <p class="text-sm/6 text-black">{{$borrow->user->username}}</p>
                 </div>
-                <div class="status-btn flex">
+                <div class="status-btn flex gap-2.5">
                     @if ($status === 'waiting')
                     <button type="button" wire:click="status('accept', {{$borrow->id}})">Terima</button>
                     <button type="button" wire:click="status('reject', {{$borrow->id}})">Tolak</button>

@@ -1,5 +1,5 @@
 @props([
-    'bgIndicator',
+    'bgIndicator' => null,
 ])
 
 <div {{$attributes->class('flex h-10 items-center py-2 ms-2')}}>
